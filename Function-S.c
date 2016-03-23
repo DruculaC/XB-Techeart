@@ -32,10 +32,7 @@ tWord Vehicle_poweron_time;	// Delay time of vehicle's power on.
   Initialisation function for the switch library.
 -*------------------------------------------------------------------*/
 void Function_s_update(void)
-   {
-	Selflearn_detection();
-	Self_learn_action();
-	
+   {	
 	Protection_Vibration_detection();
 	
 	Vehicle_poweron_detection();
@@ -56,7 +53,6 @@ void Vehicle_poweron_detection(void)
 			// Turn on electrical vehicle's sorts of power.
 			Hall_control = 0;
 			Controller_lock = 0;
-			Elecdoor_lock = 1;
 			Vehicle_poweron_EN = 0;	
 			}
 		}

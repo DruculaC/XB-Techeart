@@ -27,6 +27,7 @@
 #define Close_lock (16)
 #define Second_touch (17)
 #define Battery_sufficient (18)
+#define System_deployed (19)
 #define Tailing_brand (20)
 #define Taili_brand (21)
 #define Xinri_brand (22)
@@ -44,6 +45,7 @@ void Speech_update(void);
 void Speech_s_update(void);
 void Goto_speech(tByte count_b);
 void Custom_speech(void);
+void Speech_broadcast(void);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

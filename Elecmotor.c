@@ -16,6 +16,7 @@
 #include "Speech.h"
 #include "UART.h"
 #include "Function.h"
+#include "Delay.h"
 
 // ------ Public variable definitions ------------------------------
 bit Rotate_CW_G;		// Elecmotor CW rotated flag
@@ -48,7 +49,7 @@ tByte Bit_Index;			// Bit index of every byte, there is 8 bits per byte now.
   Initialisation function for Electronic motor's lock.
 -*------------------------------------------------------------------*/
 void Elecmotor_Init(void)
-   {
+   {	
 	// Stop elecmotor.
 	MagnetCon1 = 1;
 	MagnetCon2 = 1;
@@ -71,7 +72,6 @@ void Elecmotor_Init(void)
 	
 	// Close the 12V power of Electronic motor's controller
    Controller_lock = 1;
-	Elecdoor_lock = 0;
 	}
 
 /*------------------------------------------------------------------*-
@@ -79,10 +79,7 @@ void Elecmotor_Init(void)
   1ms/tick, excute the electronical motor lock.
 -*------------------------------------------------------------------*/
 void Elecmotor_update(void)
-   {
-	// Instant broadcast "tick" voice before open lock.
-	Speech_s_update();
-	
+   {	
 	// Detecting open lock condictions.
 	if((Key_switch_on_G == 1)&&(Rotate_CW_G == 0)&&(ID_certificated_G))
 		{
@@ -144,7 +141,6 @@ void Elecmotor_update(void)
 		// stop hall power before closing lock.
 		Hall_control = 1;		
 		Controller_lock = 1;
-		Elecdoor_lock = 0;
 		// Closing our lock.
 		MagnetCon1 = 0;
 		MagnetCon2 = 1;

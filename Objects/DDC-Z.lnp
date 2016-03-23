@@ -1,0 +1,20 @@
+".\Objects\STARTUP.obj",
+".\Objects\hSch51.obj",
+".\Objects\Timer.obj",
+".\Objects\Elecmotor.obj",
+".\Objects\Button.obj",
+".\Objects\UART.obj",
+".\Objects\Communication.obj",
+".\Objects\Speech.obj",
+".\Objects\Delay.obj",
+".\Objects\Battery.obj",
+".\Objects\Sensor.obj",
+".\Objects\Alarm.obj",
+".\Objects\Function.obj",
+".\Objects\Function-S.obj",
+".\Objects\Selflearn.obj",
+".\Objects\ISP_DataFlash.obj",
+".\Objects\Protection.obj",
+".\Objects\XB-Z.obj" 
+TO ".\Objects\DDC-Z" 
+PRINT(".\Listings\DDC-Z.m51") RAMSIZE(256) 

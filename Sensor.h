@@ -17,7 +17,6 @@ void Sensor_reset(void);
 void Sensor_enable(void);
 void Sensor_vibration_detect(void);
 void Sensor_postpone(void);
-void Sensor_cutting_wire(void);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------*-
-   A.C (v1.00)
+   UART.C (v1.00)
   ------------------------------------------------------------------
    COPYRIGHT
    ---------
@@ -12,7 +12,6 @@
 #include "UART.h"
 #include "Speech.h"
 #include "Alarm.h"
-#include "Sensor.h"
 
 // ------ Public variable definitions ------------------------------
 bit ID_certificated_G;		// Flag for ID card certificated.
@@ -30,8 +29,6 @@ code tByte IDkey5 _at_ 0x003005;
 
 // ------ Public variable declarations -----------------------------
 extern tByte Speech_time;
-
-extern bit Self_learn_G;
 extern tByte ID_certificated_time;
 
 // ------ Private variables ----------------------------------------
@@ -67,8 +64,6 @@ void UART_Init(tWord Baudrate)
 	
 	Received_count = 0;
 	ID_certificated_count = 0;
-	Silent_mode_G = 0;
-	Disable_alarm_mode_G = 0;
 	}
 
 /*-------------------------------------------------
@@ -92,6 +87,7 @@ void Senddata(tByte *addr, tByte datalength)
 		Sendbyte(*addr++);
 		}
 	}
+	
 /*-----------------------------------------------
 	UART interrupt
 -----------------------------------------------*/
@@ -100,16 +96,18 @@ void uart_isr() interrupt 4
 	if(RI)
 		{
 		RI=0;
-		
 		// Receive one byte, and move left.
 		for(Data_count = 5; Data_count > 0; Data_count--)
 			{
 			Received_cache[Data_count] = Received_cache[Data_count-1];
 			}
 		Received_cache[0] = SBUF;
+
+	test_port = ~test_port;
+
 		
 		// If in Self learning mode, receive 6 bytes.
-		if(Self_learn_G)
+		if(Passwd_reed_switch_port)
 			{
 			Received_count += 1;
 			if(Received_count >= 6)
@@ -125,10 +123,6 @@ void uart_isr() interrupt 4
 				{
 				if((Received_cache[2] == IDkey3)&&(Received_cache[1] == IDkey4)&&(Received_cache[0] == IDkey5))
 					{					
-					// immediately close the alarm speech and alarm detecting.
-					Alarm_reset();
-					Sensor_reset();
-					
 					// clear speech time for tick voice, broadcast tich speech in 100ms.
 					Speech_time = 0;		
 					Goto_speech(Tick);
@@ -136,22 +130,6 @@ void uart_isr() interrupt 4
 					// Set 1 after Tick, otherwise Elecmotor will conflict to Tick voice.
 					ID_certificated_G = 1;
 					ID_certificated_time = 0;
-					
-					// Silent mode detecting.
-					ID_certificated_count += 1;
-					if(ID_certificated_count > 1)
-						Silent_mode_G = 1;
-					
-					// Disabling alarm mode detecting.
-					if(ID_certificated_count > 5)
-						{
-						Disable_alarm_mode_G = ~Disable_alarm_mode_G;
-						ID_certificated_count = 0;
-						Goto_speech(Ticktack);
-						
-						// Reset silent mode.
-						Silent_mode_G = 0;
-						}
 					}
 				}			
 			}

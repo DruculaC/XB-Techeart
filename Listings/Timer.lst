@@ -1,0 +1,171 @@
+C51 COMPILER V9.54   TIMER                                                                 03/23/2016 11:49:18 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\Objects\Timer.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Timer.c ROM(SMALL) OPTIMIZE(8,SPEED) BROWSE DEBUG OB
+                    -JECTEXTEND PRINT(.\Listings\Timer.lst) TABS(3) OBJECT(.\Objects\Timer.obj)
+
+line level    source
+
+   1          /*---------------------------------------------------
+   2             Timer.c (v1.00)
+   3            ------------------------------------------------------------------
+   4             Timer definations for DDC-Z, DDC-F, DDC-S etc.
+   5             
+   6             COPYRIGHT
+   7            ---------
+   8             This code is copyright (c) 2015 by Richard Zhang.
+   9          ---------------------------------------------------*/ 
+  10          
+  11          #include "Main.h"
+  12          #include "Port.h"
+  13          
+  14          #include "Timer.h"
+  15          #include "hSch51.h"
+  16          
+  17          // ------ Public variable declarations -----------------------------
+  18          extern sTaskH hSCH_tasks_G[hSCH_MAX_TASKS];
+  19          
+  20          // ------ Private variable definitions -----------------------------
+  21          // Register value of Timer0 and Timer1, calculated from InitTimer()
+  22          tByte timer0_8H, timer0_8L, timer1_8H, timer1_8L;     
+  23          
+  24          /*-----------------------------------------------------------------
+  25             Timer0_Init()
+  26             Initializate Timer0.
+  27          -----------------------------------------------------------------*/
+  28          void Timer0_Init(const tWord Tick_us_T0)
+  29             {
+  30   1         tLong Inc_T0;
+  31   1         tWord timer0_16;
+  32   1         tByte i;
+  33   1         
+  34   1         // Delete all tasks when power up.
+  35   1         for (i = 0; i < hSCH_MAX_TASKS; i++) 
+  36   1            {
+  37   2            hSCH_Delete_Task(i);
+  38   2            }
+  39   1         
+  40   1         // Calculate Timer0 register value
+  41   1         Inc_T0 = (tLong)Tick_us_T0 * (OSC_FREQ/1000000) / (tLong)OSC_PER_INST;
+  42   1         timer0_16 = (tWord) (65536UL - Inc_T0);
+  43   1         timer0_8H = (tByte) (timer0_16 / 256);
+  44   1         timer0_8L = (tByte) (timer0_16 % 256);
+  45   1            
+  46   1         TMOD &= 0xF0;  // Clear all T0 bits (T1 left unchanged)
+  47   1         TMOD |= 0x01;  // Set required T0 bits (T1 left unchanged) 
+  48   1         
+  49   1         // Load the Timer0 value to TL0 and TH0
+  50   1         hSCH_Manual_Timer0_Reload();
+  51   1         
+  52   1         // Interrupt Timer 0 enabled
+  53   1         ET0  = 1;
+  54   1         }
+C51 COMPILER V9.54   TIMER                                                                 03/23/2016 11:49:18 PAGE 2   
+
+  55          
+  56          /*------------------------------------------------------------------*-
+  57          
+  58            hSCH_Start()
+  59          
+  60            Starts the scheduler, by enabling interrupts.
+  61          
+  62            NOTE: Usually called after all regular tasks are added,
+  63            to keep the tasks synchronised.
+  64          
+  65            NOTE: ONLY THE SCHEDULER INTERRUPT SHOULD BE ENABLED!!! 
+  66           
+  67          -*------------------------------------------------------------------*/
+  68          void hSCH_Start(void) 
+  69             {
+  70   1         EA = 1;
+  71   1         }
+  72          
+  73          /*------------------------------------------------------------------*-
+  74          
+  75            hSCH_Manual_Timer0_Reload()
+  76          
+  77            This scheduler uses a (manually reloaded) 16-bit timer.
+  78            The manual reload means that all timings are approximate. 
+  79            THIS SCHEDULER IS NOT SUITABLE FOR APPLICATIONS WHERE
+  80            ACCURATE TIMING IS REQUIRED!!!
+  81            Timer reload is carried out in this function. 
+  82           
+  83          -*------------------------------------------------------------------*/
+  84          void hSCH_Manual_Timer0_Reload()
+  85             {
+  86   1         // Stop Timer 0
+  87   1         TR0 = 0;
+  88   1      
+  89   1         // 8051, 12 MHz
+  90   1         // The Timer 0 resolution is 1.000 s
+  91   1         // We set the timer at 64336 to generate interrupt after 1 ms
+  92   1         // -> we are generating timer ticks at ~1 ms intervals
+  93   1         TL0  = timer0_8L;
+  94   1         TH0  = timer0_8H; 
+  95   1      
+  96   1         //  Start Timer 0
+  97   1         TR0  = 1;
+  98   1         }  
+  99          
+ 100          /*------------------------------------------------------------------*-
+ 101          
+ 102            SCH_Update
+ 103          
+ 104            This is the scheduler ISR.  It is called at a rate 
+ 105            determined by the timer settings in SCH_Init_T0().
+ 106            This version is triggered by Timer 0 interrupts.
+ 107           
+ 108          -*------------------------------------------------------------------*/
+ 109          void SCH_Update(void) interrupt interrupt_timer_0_overflow 
+ 110             {
+ 111   1         tByte Index;
+ 112   1         // Reload the Timer0 value
+ 113   1         hSCH_Manual_Timer0_Reload();
+ 114   1      
+ 115   1         // NOTE: calculations are in *TICKS* (not milliseconds)
+ 116   1         for (Index = 0; Index < hSCH_MAX_TASKS; Index++)
+C51 COMPILER V9.54   TIMER                                                                 03/23/2016 11:49:18 PAGE 3   
+
+ 117   1            {
+ 118   2            // Check if there is a task at this location
+ 119   2            if (hSCH_tasks_G[Index].pTask)
+ 120   2               {
+ 121   3               if (hSCH_tasks_G[Index].Delay == 0)
+ 122   3                  {
+ 123   4                  // The task is due to run
+ 124   4                  hSCH_tasks_G[Index].RunMe += 1;  // Inc. the 'Run Me' flag
+ 125   4      
+ 126   4                  if (hSCH_tasks_G[Index].Period)
+ 127   4                     {
+ 128   5                     // Schedule periodic tasks to run again
+ 129   5                     hSCH_tasks_G[Index].Delay = hSCH_tasks_G[Index].Period;
+ 130   5                     }
+ 131   4                  }
+ 132   3               else
+ 133   3                  {
+ 134   4                  // Not yet ready to run: just decrement the delay 
+ 135   4                  hSCH_tasks_G[Index].Delay -= 1;
+ 136   4                  }
+ 137   3               }         
+ 138   2            }
+ 139   1         } 
+ 140          
+ 141          /*---------------------------------------------------
+ 142             end of file
+ 143          ----------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    206    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

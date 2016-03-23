@@ -44,15 +44,15 @@ typedef unsigned long tLong;
 #define Z2
 
 // Define salve model, F2, F3.
-//#define F3
+// #define F3
 
 // Define model.
 // ID, WX, 
 #define ID
 
 // Define the Lock model.
-//#define Suidongzha, Guxingzha
-//#define Guxingzha
+// #define Suidongzha, Guxingzha
+// #define Guxingzha
 
 // Misc defines
 #ifndef True

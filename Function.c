@@ -49,9 +49,6 @@ void Function_update(void)
 	// Enable sensor 20s after closing lock.
 	Sensor_postpone();
 	
-	// In self learn mode, if no ID card signal sent in, exit self learn mode.
-	Self_learn_reset();
-	
 	Auto_close_detection();
    }
 
@@ -61,7 +58,7 @@ void Function_update(void)
 -*------------------------------------------------------------------*/
 void Auto_close_detection(void)
    {
-   if((Key_switch == 1)&&(Vertical_sensor)&&(Horizontal_sensor)&&(Micromotion_sensor)&&(!wheeled_rotate))
+   if((Vertical_sensor)&&(Horizontal_sensor)&&(Micromotion_sensor)&&(!wheeled_rotate))
 		{
 		Auto_close_time += 1;
 		if(Auto_close_time > 60)

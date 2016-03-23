@@ -44,7 +44,7 @@ bit Wire_cut_G;		// Flag for wire cut out.
 -*------------------------------------------------------------------*/
 void Sensor_update(void)
    {
-	if((Sensor_blocked_G)||(Program_blocked_G)||(!Sensor_EN)||(Disable_alarm_mode_G))
+	if((Sensor_blocked_G)||(Program_blocked_G)||(!Sensor_EN))
 		{
 		// detect sensor level 2 after 3s.
 		if(Sensor_trigger_level == 2)
@@ -63,32 +63,6 @@ void Sensor_update(void)
 		}
 	
 	Sensor_vibration_detect();
-	
-	Sensor_cutting_wire();
-	}
-
-/*------------------------------------------------------------------*-
-  Sensor_cutting_wire()
-  Detecting cutting wire. 1 means "normal", 0 for "wire cut out"
--*------------------------------------------------------------------*/
-void Sensor_cutting_wire(void)
-   {
-	if((Wire_cut == 0)&&(Wire_cut_G == 0))
-		{
-		Wire_cut_G = 1;
-		
-		// Triggle alarm(case 3).
-		Sensor_blocked_G = 1;
-		Sensor_to_alarm = 1;
-		}
-	else if((Wire_cut == 1)&&(Wire_cut_G == 1))
-		{
-		Wire_cut_G = 0;		
-		Alarm_reset();
-		// clear speech time for tick voice, broadcast tich speech in 100ms.
-		Speech_time = 0;		
-		Goto_speech(Tick);
-		}
 	}
 
 /*------------------------------------------------------------------*-
@@ -107,8 +81,6 @@ void Sensor_Init(void)
 	Sensor_EN = 0;	
 	Sensor_delay_EN = 0;
 	Sensor_delay_time = 0;
-	
-	Wire_cut_G = 0;
 	}
 
 /*------------------------------------------------------------------*-

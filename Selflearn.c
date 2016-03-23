@@ -17,64 +17,26 @@
 #include "UART.h"
 
 // ------ Public variable definitions ------------------------------
-bit Self_learn_G;
 
 // ------ Public variable declarations -----------------------------
 extern bit Received_finished_G;
 extern tByte Received_cache[7];
 
 // ------ Private variables ----------------------------------------
-tWord Self_learn_HVtime;
-tByte Self_learn_level;
-tByte Self_learn_mode_duration;
 
 // ------ Private constants ----------------------------------------
 
 /*------------------------------------------------------------------*-
-  SWITCH_Init()
+  Selflearn_Init()
   Initialisation function for the switch library.
 -*------------------------------------------------------------------*/
 void Selflearn_Init(void)
    {
-	// Set Self_learn_port (P0.1) to input mode.
-	P0M1 |= 0x02;
-	P0M2 &= 0xfd;
- 	Self_learn_level = 0;
-	Self_learn_mode_duration = 0;
+	// Set P0.3(Passwd_reed_switch_port) to input mode.
+	P2M1 |= 0x20;
+	P2M2 &= 0xdf;
 	}
 
-/*------------------------------------------------------------------*-
-  Selflearn_detection()
-  Initialisation function for the switch library.
--*------------------------------------------------------------------*/
-void Selflearn_detection(void)
-   {
-	if((Key_switch)&&(Self_learn_port))
-		{
-		Self_learn_HVtime += 1;
-		if(Self_learn_HVtime >= 6000)
-			{
-			Self_learn_HVtime = 6001;
-			Self_learn_level = 0;
-			Self_learn_G = 0;
-			}
-		}
-	else if((Key_switch)&&(!Self_learn_port))
-		{
-		if(Self_learn_HVtime >= 300)
-			{
-			Self_learn_HVtime = 0;
-			Self_learn_level += 1;
-			}
-		}
-		
-	if(Self_learn_level > 5)
-		{
-		Self_learn_level = 0;
-		Self_learn_G = 1;
-		Goto_speech(Ticktack);
-		}
-	}
 
 /*------------------------------------------------------------------*-
   Self_learn_action()
@@ -82,32 +44,11 @@ void Selflearn_detection(void)
 -*------------------------------------------------------------------*/
 void Self_learn_action(void)
 	{
-	if(Self_learn_G)
+	if((Passwd_reed_switch_port)&&(Received_finished_G))
 		{
-		if(Received_finished_G)
-			{
-			Self_learn_programming();
-			Received_finished_G = 0;
-			Self_learn_G = 0;
-			Goto_speech(Ticktack);
-			}
-		}
-	}
-
-/*------------------------------------------------------------------*-
-  Self_learn_reset()
-  Initialisation function for the switch library.
--*------------------------------------------------------------------*/
-void Self_learn_reset(void)
-	{
-	if(Self_learn_G)
-		{
-		Self_learn_mode_duration += 1;
-		if(Self_learn_mode_duration > 5)
-			{
-			Self_learn_mode_duration = 0;
-			Self_learn_G = 0;
-			}
+		Goto_speech(Ticktack);
+		Self_learn_programming();
+		Received_finished_G = 0;
 		}
 	}
 

@@ -30,7 +30,7 @@ void main(void)
 	// Initialize all tasks
 	Speech_Init();
 	UART_Init(BAUD9600);
-	Timer0_Init(500);   
+	Timer0_Init(150);   		// 160us/tickets
 	Elecmotor_Init();
 	Button_Init();
 	Battery_Init();
@@ -40,13 +40,13 @@ void main(void)
 	Function_S_init();
 
    // Add Tasks
-   hSCH_Add_Task(Elecmotor_update, 1000, 1, 1);		// 1ms/ticket
-   hSCH_Add_Task(Button_update, 1500, 200, 1);		// 100ms/ticket
-   hSCH_Add_Task(Speech_update, 1500, 1000, 1);		// 0.5s/ticket
-   hSCH_Add_Task(Sensor_update, 2000, 1, 1);			// 1ms/ticket
-	hSCH_Add_Task(Alarm_update, 3000, 2000, 1);		// 1s/ticket
-   hSCH_Add_Task(Function_update, 1500, 4000, 1);	// 2s/ticket
-   hSCH_Add_Task(Function_s_update, 2000, 1, 1);	// 1ms/ticket
+   hSCH_Add_Task(Button_update, 1500, 300, 1);		// 50ms/ticket
+   hSCH_Add_Task(Speech_update, 1000, 3000, 1);		// 0.5s/ticket
+//   hSCH_Add_Task(Sensor_update, 2000, 1, 1);			// 1ms/ticket
+//	  hSCH_Add_Task(Alarm_update, 3000, 2000, 1);		// 1s/ticket
+//   hSCH_Add_Task(Function_update, 1500, 4000, 1);	// 2s/ticket
+//   hSCH_Add_Task(Function_s_update, 2000, 1, 1);	// 1ms/ticket
+//   hSCH_Add_Task(Elecmotor_update, 1000, 10000, 1);		// 1ms/ticket
 	
 	// Start the program.
 	hSCH_Start();

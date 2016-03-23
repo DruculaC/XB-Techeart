@@ -14,6 +14,7 @@
 #include "Speech.h"
 #include "Delay.h"
 #include "Battery.h"
+#include "Communication.h"
 
 // ------ Public variable definitions ------------------------------
 bit Speech_blocked_G;	// Block other speech program.
@@ -102,6 +103,48 @@ void Custom_speech(void)
 ------------------------------------------------------------------*/
 void Speech_update(void)
 	{
+	Speech_broadcast();
+	}
+	
+/*----------------------------------------------------------------
+	Speech_s_update_s()
+	Instant speech update, 1ms/ticket, for now, only "Tich" voice.
+------------------------------------------------------------------*/
+void Speech_s_update(void)
+	{
+	if(Speech_scenario == Tick)
+		{
+		if(Speech_EN)
+			{
+			Speech_time += 1;
+			if(Speech_time > Speech_time_thres)
+				{
+				Speech_time = 0;
+				Speech_EN = 0;
+				Sensor_blocked_G = 0;
+				Speech_scenario = 0;
+				}
+			}
+		else
+			{
+			switch(Speech_scenario)
+				{
+				case Tick:
+					{
+					Send_speech(Tick, 20);
+					}
+				break;		
+				}		
+			}		
+		}
+	}
+
+/*----------------------------------------------------------------
+	Speech_broadcast()
+   broadcast the various speech.
+------------------------------------------------------------------*/
+void Speech_broadcast(void)
+	{
 	if(Speech_EN)
 		{
 		Speech_time += 1;
@@ -118,7 +161,7 @@ void Speech_update(void)
 			{
 			case No_voice:
 				{
-				Send_speech(No_voice, 1);				
+				Send_speech(No_voice, 1);
 				}
 			break;
 			case First_touch:
@@ -223,7 +266,12 @@ void Speech_update(void)
 				Send_speech(Battery_sufficient, 3);
 				Custom_speech();
 				}
-			break;
+			break;			
+			case System_deployed:
+				{
+				Send_speech(System_deployed, 3);
+				}
+			break;			
 			case Tailing_brand:
 				{
 				Send_speech(Tailing_brand, 1);
@@ -270,40 +318,7 @@ void Speech_update(void)
 				}
 			break;
 			}		
-		}
-	}
-	
-/*----------------------------------------------------------------
-	Speech_s_update_s()
-	Instant speech update, 1ms/ticket, for now, only "Tich" voice.
-------------------------------------------------------------------*/
-void Speech_s_update(void)
-	{
-	if(Speech_scenario == Tick)
-		{
-		if(Speech_EN)
-			{
-			Speech_time += 1;
-			if(Speech_time > Speech_time_thres)
-				{
-				Speech_time = 0;
-				Speech_EN = 0;
-				Sensor_blocked_G = 0;
-				Speech_scenario = 0;
-				}
-			}
-		else
-			{
-			switch(Speech_scenario)
-				{
-				case Tick:
-					{
-					Send_speech(Tick, 1000);
-					}
-				break;		
-				}		
-			}		
-		}
+		}	
 	}
 
 /*------------------------------------------------------------------*-

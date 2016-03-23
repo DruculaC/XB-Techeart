@@ -1,0 +1,147 @@
+C51 COMPILER V9.54   FUNCTION                                                              03/23/2016 11:49:19 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE FUNCTION
+OBJECT MODULE PLACED IN .\Objects\Function.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Function.c ROM(SMALL) OPTIMIZE(8,SPEED) BROWSE DEBUG
+                    - OBJECTEXTEND PRINT(.\Listings\Function.lst) TABS(3) OBJECT(.\Objects\Function.obj)
+
+line level    source
+
+   1          /*------------------------------------------------------------------*-
+   2             A.C (v1.00)
+   3            ------------------------------------------------------------------
+   4             Simple switch interface code, with software debounce.
+   5          
+   6             COPYRIGHT
+   7             ---------
+   8             This code is copyright (c) 2001 by Richard Zhang.
+   9          -*------------------------------------------------------------------*/
+  10          
+  11          #include "Main.h"
+  12          #include "Port.h"
+  13          
+  14          #include "Function.h"
+  15          #include "Sensor.h"
+  16          #include "Selflearn.h"
+  17          #include "Protection.h"
+  18          #include "Battery.h"
+  19          
+  20          // ------ Public variable definitions ------------------------------
+  21          tByte ID_certificated_time;
+  22          bit Auto_close_G;
+  23          tByte Auto_close_time;
+  24          
+  25          // ------ Public variable declarations -----------------------------
+  26          extern bit ID_certificated_G;
+  27          extern bit Program_blocked_G;
+  28          extern bit Sensor_delay_EN;
+  29          extern tByte Sensor_delay_time;
+  30          extern tByte ID_certificated_count;
+  31          extern bit Disable_alarm_mode_G;
+  32          
+  33          // ------ Private variables ----------------------------------------
+  34          
+  35          // ------ Private constants ----------------------------------------
+  36          
+  37          /*------------------------------------------------------------------*-
+  38            Function_update()
+  39            Initialisation function for the switch library.
+  40          -*------------------------------------------------------------------*/
+  41          void Function_update(void)
+  42             {
+  43   1         // Detecting electrical vehicle's battery every 2s.
+  44   1         Battery_detection();
+  45   1         
+  46   1         // ID expiring 10s.
+  47   1         ID_certificated_expire();
+  48   1         
+  49   1         // Enable sensor 20s after closing lock.
+  50   1         Sensor_postpone();
+  51   1         
+  52   1         Auto_close_detection();
+  53   1         }
+  54          
+C51 COMPILER V9.54   FUNCTION                                                              03/23/2016 11:49:19 PAGE 2   
+
+  55          /*------------------------------------------------------------------*-
+  56            Auto_close_detection()
+  57            Initialisation function for the switch library.
+  58          -*------------------------------------------------------------------*/
+  59          void Auto_close_detection(void)
+  60             {
+  61   1         if((Vertical_sensor)&&(Horizontal_sensor)&&(Micromotion_sensor)&&(!wheeled_rotate))
+  62   1            {
+  63   2            Auto_close_time += 1;
+  64   2            if(Auto_close_time > 60)
+  65   2               {
+  66   3               Auto_close_time = 11;
+  67   3               Auto_close_G = 1;
+  68   3               }
+  69   2            }
+  70   1         else
+  71   1            Auto_close_time = 0;
+  72   1         }
+  73          
+  74          /*------------------------------------------------------------------*-
+  75            Function_init()
+  76            Initialisation function for the switch library.
+  77          -*------------------------------------------------------------------*/
+  78          void Function_init(void)
+  79             {
+  80   1         ID_reset();
+  81   1         
+  82   1         Auto_close_time = 0;
+  83   1         Auto_close_G = 0;
+  84   1         }
+  85          
+  86          /*------------------------------------------------------------------*-
+  87            ID_reset()
+  88            Initialisation function for the switch library.
+  89          -*------------------------------------------------------------------*/
+  90          void ID_reset(void)
+  91             {
+  92   1         ID_certificated_time = 0;
+  93   1         ID_certificated_G = 0;
+  94   1         ID_certificated_count = 0;
+  95   1         }
+  96          
+  97          /*------------------------------------------------------------------*-
+  98            ID_certificated_expire()
+  99            Initialisation function for the switch library.
+ 100          -*------------------------------------------------------------------*/
+ 101          void ID_certificated_expire(void)
+ 102             {
+ 103   1         // Reset the ID certification.
+ 104   1         if((ID_certificated_G)&&(!Program_blocked_G))
+ 105   1            {
+ 106   2            ID_certificated_time += 1;
+ 107   2            if(ID_certificated_time > 5)
+ 108   2               {
+ 109   3               // Reset ID and enable sensor detecting.
+ 110   3               ID_reset();
+ 111   3               Sensor_enable();
+ 112   3               }     
+ 113   2            }
+ 114   1         }
+ 115          
+ 116          
+C51 COMPILER V9.54   FUNCTION                                                              03/23/2016 11:49:19 PAGE 3   
+
+ 117          /*------------------------------------------------------------------*-
+ 118            ---- END OF FILE -------------------------------------------------
+ 119          -*------------------------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     75    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

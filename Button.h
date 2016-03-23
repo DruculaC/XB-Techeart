@@ -16,6 +16,7 @@
 // ------ Public function prototypes -------------------------------
 void Button_Init(void);
 void Button_update(void);
+void XB_reed_detection(void);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------
