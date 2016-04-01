@@ -38,10 +38,10 @@ typedef unsigned long tLong;
 
 // Program version
 // Define customer, such as Taili, Shengbaolong, Wangpai, Tailing, General
-#define General
+// #define General
 
 // Define PCB board, such as Z2, Z3.
-#define Z2
+// #define Z2
 
 // Define salve model, F2, F3.
 // #define F3
@@ -53,6 +53,11 @@ typedef unsigned long tLong;
 // Define the Lock model.
 // #define Suidongzha, Guxingzha
 // #define Guxingzha
+
+// Define 4031C version
+// Version1512, Version1603
+#define Version1603
+
 
 // Misc defines
 #ifndef True

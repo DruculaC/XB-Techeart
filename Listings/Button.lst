@@ -1,10 +1,10 @@
-C51 COMPILER V9.54   BUTTON                                                                03/23/2016 11:49:18 PAGE 1   
+C51 COMPILER V9.54   BUTTON                                                                04/01/2016 10:06:43 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE BUTTON
 OBJECT MODULE PLACED IN .\Objects\Button.obj
-COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Button.c ROM(SMALL) OPTIMIZE(8,SPEED) BROWSE DEBUG O
-                    -BJECTEXTEND PRINT(.\Listings\Button.lst) TABS(3) OBJECT(.\Objects\Button.obj)
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Button.c ROM(COMPACT) OPTIMIZE(8,SPEED) BROWSE DEBUG
+                    - OBJECTEXTEND PRINT(.\Listings\Button.lst) TABS(3) OBJECT(.\Objects\Button.obj)
 
 line level    source
 
@@ -22,14 +22,14 @@ line level    source
   12          #include "Port.h"
   13          
   14          #include "Button.h"
-  15          #include "Speech.h"
-  16          #include "Selflearn.h"
+  15          #include "Selflearn.h"
+  16          #include "Speech.h"
   17          
   18          // ------ Public variable definitions ------------------------------
   19          bit System_EN_G;     // Flag for system enabled, 0 for not enabled, 1 for enabled.
   20          
   21          // ------ Public variable declarations -----------------------------
-  22          
+  22          extern bit ID_certificated_G;
   23          
   24          // ------ Private variables ----------------------------------------
   25          tByte XB_reed_HVtime;
@@ -60,12 +60,12 @@ line level    source
   50          void Button_update(void)
   51             {  
   52   1         XB_reed_detection();
-  53   1      
+  53   1         
   54   1         Self_learn_action();
-C51 COMPILER V9.54   BUTTON                                                                03/23/2016 11:49:18 PAGE 2   
+C51 COMPILER V9.54   BUTTON                                                                04/01/2016 10:06:43 PAGE 2   
 
   55   1         
-  56   1         // Instant broadcast "tick" voice before open lock.
+  56   1         // Instant broadcast "tick" voice
   57   1         Speech_s_update();
   58   1         }
   59          
@@ -74,7 +74,7 @@ line level    source
   62          -*------------------------------------------------------------------*/
   63          void XB_reed_detection(void)
   64             {
-  65   1         if(!XB_reed_switch_port)
+  65   1         if(XB_reed_switch_port)
   66   1            {
   67   2            XB_reed_HVtime += 1;
   68   2            // If exceed 3s, then reset.
@@ -92,7 +92,7 @@ line level    source
   80   3               XB_reed_level += 1;
   81   3               }
   82   2            }
-  83   1         
+  83   1      
   84   1         // If open and close for 3 times, triggle.
   85   1         if(XB_reed_level >= 3)
   86   1            {
@@ -100,9 +100,9 @@ line level    source
   88   2            System_EN_G = ~System_EN_G;
   89   2            // If system is enabled, deploy the vibration sensor and ultrasonic sensor.
   90   2            if(System_EN_G == 1)
-  91   2               Goto_speech(System_deployed);
+  91   2               Goto_speech(System_open);
   92   2            else
-  93   2               Goto_speech(Ticktack);     
+  93   2               Goto_speech(System_closed);
   94   2            }  
   95   1         }
   96          
@@ -112,7 +112,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     75    ----
+   CODE SIZE        =     79    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

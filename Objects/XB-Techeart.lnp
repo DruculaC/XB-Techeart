@@ -1,0 +1,17 @@
+".\Objects\STARTUP.obj",
+".\Objects\XB-Z.obj",
+".\Objects\hSch51.obj",
+".\Objects\Timer.obj",
+".\Objects\UART.obj",
+".\Objects\Button.obj",
+".\Objects\ISP_DataFlash.obj",
+".\Objects\Selflearn.obj",
+".\Objects\Speech.obj",
+".\Objects\Delay.obj",
+".\Objects\IIC.obj",
+".\Objects\KBI.obj",
+".\Objects\Alarm.obj",
+".\Objects\Battery.obj",
+".\Objects\Clock.obj" 
+TO ".\Objects\XB-Techeart" 
+PRINT(".\Listings\XB-Techeart.m51") RAMSIZE(256) 

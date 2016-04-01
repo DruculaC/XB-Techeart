@@ -11,7 +11,7 @@
 
 #include "UART.h"
 #include "Speech.h"
-#include "Alarm.h"
+//#include "Alarm.h"
 
 // ------ Public variable definitions ------------------------------
 bit ID_certificated_G;		// Flag for ID card certificated.
@@ -20,16 +20,27 @@ bit Silent_mode_G;			// Flag for silent mode.
 tByte ID_certificated_count;		// The count times of ID certificating.
 bit Disable_alarm_mode_G;			// Flag for disabling alarm mode.
 
+/*
 code tByte IDkey0 _at_ 0x003000;
 code tByte IDkey1 _at_ 0x003001;
 code tByte IDkey2 _at_ 0x003002;
 code tByte IDkey3 _at_ 0x003003;
 code tByte IDkey4 _at_ 0x003004;
 code tByte IDkey5 _at_ 0x003005;
+*/
+
+tByte IDkey0;
+tByte IDkey1;
+tByte IDkey2;
+tByte IDkey3;
+tByte IDkey4;
+tByte IDkey5;
 
 // ------ Public variable declarations -----------------------------
 extern tByte Speech_time;
 extern tByte ID_certificated_time;
+extern bit Alarm_G;
+extern bit System_EN_G;
 
 // ------ Private variables ----------------------------------------
 tByte Received_cache[7];		// Cache of receiving bytes.
@@ -105,9 +116,8 @@ void uart_isr() interrupt 4
 
 	test_port = ~test_port;
 
-		
 		// If in Self learning mode, receive 6 bytes.
-		if(Passwd_reed_switch_port)
+		if(!Passwd_reed_switch_port)
 			{
 			Received_count += 1;
 			if(Received_count >= 6)
@@ -115,6 +125,13 @@ void uart_isr() interrupt 4
 				Received_count = 0;
 				// Set receiving finished.
 				Received_finished_G = 1;
+				
+				IDkey0 = Received_cache[5];
+				IDkey1 = Received_cache[4];
+				IDkey2 = Received_cache[3];
+				IDkey3 = Received_cache[2];
+				IDkey4 = Received_cache[1];
+				IDkey5 = Received_cache[0];
 				}
 			}
 		else
@@ -122,16 +139,18 @@ void uart_isr() interrupt 4
 			if((Received_cache[5] == IDkey0)&&(Received_cache[4] == IDkey1)&&(Received_cache[3] == IDkey2))
 				{
 				if((Received_cache[2] == IDkey3)&&(Received_cache[1] == IDkey4)&&(Received_cache[0] == IDkey5))
-					{					
-					// clear speech time for tick voice, broadcast tich speech in 100ms.
-					Speech_time = 0;		
-					Goto_speech(Tick);
-					
-					// Set 1 after Tick, otherwise Elecmotor will conflict to Tick voice.
-					ID_certificated_G = 1;
-					ID_certificated_time = 0;
+					{
+					if(XB_reed_switch_port == 0)
+						{
+						// clear speech time for tick voice, broadcast tich speech in 100ms.
+						Speech_time = 0;
+						Goto_speech(Tick);
+						ID_certificated_G = 1;
+						}
+
+					Alarm_G = 0;
 					}
-				}			
+				}
 			}
 		}
 	}

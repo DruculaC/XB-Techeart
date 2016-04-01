@@ -6,14 +6,14 @@
    This code is copyright (c) 2001 by Richard Zhang. 
 -*------------------------------------------------------------------*/
 
-// ------ Public data type declarations ----------------------------
+// ------ Public data type declarations ----------------------------typedef tByte tBargraph;
 
 // ------ Public constants -----------------------------------------
 
 // ------ Public function prototypes -------------------------------
 void Alarm_Init(void);
 void Alarm_update(void);
-void Alarm_reset(void);
+void Analyse_KBI(void);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

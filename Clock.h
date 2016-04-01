@@ -6,13 +6,14 @@
    This code is copyright (c) 2001 by Richard Zhang. 
 -*------------------------------------------------------------------*/
 
-// ------ Public data type declarations ----------------------------
+// ------ Public data type declarations ----------------------------typedef tByte tBargraph;
 
 // ------ Public constants -----------------------------------------
 
 // ------ Public function prototypes -------------------------------
-void Battery_Init(void);
-void Battery_detection(void);
+void Clock_Init(void);
+void Clock_update(void);
+
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

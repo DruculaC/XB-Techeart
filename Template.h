@@ -6,15 +6,11 @@
    This code is copyright (c) 2001 by Richard Zhang. 
 -*------------------------------------------------------------------*/
 
-// ------ Public data type declarations ----------------------------
-typedef tByte tBargraph;
+// ------ Public data type declarations ----------------------------typedef tByte tBargraph;
 
 // ------ Public constants -----------------------------------------
-#define BARGRAPH_MAX (255)
-#define BARGRAPH_MIN (0)
 
 // ------ Public function prototypes -------------------------------
-void SWITCH_Init(void);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

@@ -74,49 +74,6 @@ unsigned char Flash_Read_Data(unsigned int address)
 	return dat;		
 }
 */
-/*---------------------------------------------------------------
-	Self_learn_programming(void)
-	自学习功能，将密码烧录到flash ROM中
-
-void Self_learn_programming(void)
-	{
-	Flash_Page_Erase(0x3000);
-	#ifdef ID
-	Flash_Write_Data(0x3000, received_data_buffer[0]);		
-	Flash_Write_Data(0x3001, received_data_buffer[1]);		
-	Flash_Write_Data(0x3002, received_data_buffer[2]);		
-	Flash_Write_Data(0x3003, received_data_buffer[3]);		
-	Flash_Write_Data(0x3004, received_data_buffer[4]);
-	Flash_Write_Data(0x3005, received_data_buffer[5]);
-	#endif
-	#ifdef WX
-	Flash_Write_Data(0x3000, received_data_buffer[2]);		
-	Flash_Write_Data(0x3001, received_data_buffer[3]);		
-	Flash_Write_Data(0x3002, received_data_buffer[4]);		
-	Flash_Write_Data(0x3003, received_data_buffer[5]);		
-	Flash_Write_Data(0x3004, received_data_buffer[6]);
-//	Flash_Write_Data(0x3005, received_data_buffer[7]);
-//	Flash_Write_Data(0x3006, received_data_buffer[0]);		
-//	Flash_Write_Data(0x3007, received_data_buffer[1]);		
-	#endif
-	}
-----------------------------------------------------------------*/
-
-/*---------------------------------------------------------------
-	Self_learn_programming(void)
-	自学习功能，将密码烧录到flash ROM中
-
-void Self_learn_programming_F(void)
-	{
-	Flash_Page_Erase(0x3000);
-	Flash_Write_Data(0x3000, received_data_buffer[2]);		
-	Flash_Write_Data(0x3001, received_data_buffer[3]);		
-	Flash_Write_Data(0x3002, received_data_buffer[4]);		
-	Flash_Write_Data(0x3003, received_data_buffer[5]);		
-	Flash_Write_Data(0x3004, received_data_buffer[6]);
-	Flash_Write_Data(0x3005, received_data_buffer[7]);
-	}
-----------------------------------------------------------------*/
 	
 /*---------------------------------------------------
 	end of file

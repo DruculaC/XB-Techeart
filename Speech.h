@@ -8,44 +8,50 @@
 
 // ------ Public data type declarations ----------------------------
 
-// ------ Public constants -----------------------------------------
-#define No_voice (1)
-#define First_touch (2)
-#define Stolen_motor (3)
-#define Battery_insufficient (4)
-#define Battery_5km (5)
-#define Battery_10km (6)
-#define Battery_15km (7)
-#define Battery_20km (8)
-#define Battery_35km (9)
-#define Appreciate_life (10)
-#define Shengbaolong_brand (11)
-#define Reminder (12)
-#define Stolen_battery (13)
-#define Siren (14)
-#define Open_lock (15)
-#define Close_lock (16)
-#define Second_touch (17)
-#define Battery_sufficient (18)
-#define System_deployed (19)
-#define Tailing_brand (20)
-#define Taili_brand (21)
-#define Xinri_brand (22)
-#define Huanghe_brand (23)
-#define Tick (24)
-#define Ticktack (25)
-#define Taili_speech (26)
-#define Youhu_brand (29)
-#define Lvneng_brand (30)
-
 // ------ Public function prototypes -------------------------------
 void Speech_Init(void);
 void Send_speech(tByte count_a, tByte time_b);
 void Speech_update(void);
 void Speech_s_update(void);
 void Goto_speech(tByte count_b);
-void Custom_speech(void);
 void Speech_broadcast(void);
+
+// ------ Public constants -----------------------------------------
+#define No_voice (1)
+#define First_touch (2)
+#define Stolen_motor (3)
+#define Appreciate_life (4)
+#define Shengbaolong_brand (5)
+#define Reminder (6)
+#define Siren (7)
+#define Battery_can_hold (8)
+#define Open_lock (9)
+#define Close_lock (10)
+#define Kilometer (11)
+#define One (12)
+#define Two (13)
+#define Three (14)
+#define Four (15)
+#define Five (16)
+#define Six (17)
+#define Seven (18)
+#define Eight (19)
+#define Nine (20)
+#define Ten (21)
+#define Second_touch (22)
+#define System_closed (23)
+#define Tailing_brand (24)
+#define Xinri_brand (25)
+#define Tick (26)
+#define Ticktack (27)
+#define Aima_brand (28)
+#define System_open (29)
+#define Hundred (30)
+#define Zero (31)
+#define Fengyang_brand (32)
+#define Kaiqi_brand (33)
+#define Kangjing_brand (34)
+#define Xiangniu_brand (35)
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

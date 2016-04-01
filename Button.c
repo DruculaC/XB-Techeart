@@ -12,14 +12,14 @@
 #include "Port.h"
 
 #include "Button.h"
-#include "Speech.h"
 #include "Selflearn.h"
+#include "Speech.h"
 
 // ------ Public variable definitions ------------------------------
 bit System_EN_G;		// Flag for system enabled, 0 for not enabled, 1 for enabled.
 
 // ------ Public variable declarations -----------------------------
-
+extern bit ID_certificated_G;
 
 // ------ Private variables ----------------------------------------
 tByte XB_reed_HVtime;
@@ -50,10 +50,10 @@ void Button_Init(void)
 void Button_update(void)
    {	
 	XB_reed_detection();
-
+	
 	Self_learn_action();
 	
-	// Instant broadcast "tick" voice before open lock.
+	// Instant broadcast "tick" voice
 	Speech_s_update();
 	}
 
@@ -62,7 +62,7 @@ void Button_update(void)
 -*------------------------------------------------------------------*/
 void XB_reed_detection(void)
 	{
-	if(!XB_reed_switch_port)
+	if(XB_reed_switch_port)
 		{
 		XB_reed_HVtime += 1;
 		// If exceed 3s, then reset.
@@ -80,7 +80,7 @@ void XB_reed_detection(void)
 			XB_reed_level += 1;
 			}
 		}
-	
+
 	// If open and close for 3 times, triggle.
 	if(XB_reed_level >= 3)
 		{
@@ -88,9 +88,9 @@ void XB_reed_detection(void)
 		System_EN_G = ~System_EN_G;
 		// If system is enabled, deploy the vibration sensor and ultrasonic sensor.
 		if(System_EN_G == 1)
-			Goto_speech(System_deployed);
+			Goto_speech(System_open);
 		else
-			Goto_speech(Ticktack);		
+			Goto_speech(System_closed);
 		}	
 	}
 

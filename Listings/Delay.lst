@@ -1,10 +1,10 @@
-C51 COMPILER V9.54   DELAY                                                                 03/23/2016 11:49:19 PAGE 1   
+C51 COMPILER V9.54   DELAY                                                                 04/01/2016 10:06:44 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE DELAY
 OBJECT MODULE PLACED IN .\Objects\Delay.obj
-COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Delay.c ROM(SMALL) OPTIMIZE(8,SPEED) BROWSE DEBUG OB
-                    -JECTEXTEND PRINT(.\Listings\Delay.lst) TABS(3) OBJECT(.\Objects\Delay.obj)
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Delay.c ROM(COMPACT) OPTIMIZE(8,SPEED) BROWSE DEBUG 
+                    -OBJECTEXTEND PRINT(.\Listings\Delay.lst) TABS(3) OBJECT(.\Objects\Delay.obj)
 
 line level    source
 
@@ -33,7 +33,7 @@ line level    source
   23          // ------ Private constants ----------------------------------------
   24          
   25          /*------------------------------------------------------------------*-
-  26            SWITCH_Init()
+  26            Delay()
   27            Initialisation function for the switch library.
   28          -*------------------------------------------------------------------*/
   29          void Delay(tWord time_a)
@@ -45,13 +45,25 @@ line level    source
   35   1         }
   36          
   37          /*------------------------------------------------------------------*-
-  38            ---- END OF FILE -------------------------------------------------
+  38            Delay5us()
   39          -*------------------------------------------------------------------*/
+  40          void Delay5us(void)
+  41             {
+  42   1         _nop_();_nop_();_nop_();_nop_();
+  43   1         _nop_();_nop_();_nop_();_nop_();
+  44   1         _nop_();_nop_();_nop_();_nop_();
+  45   1         }
+  46             
+  47          /*------------------------------------------------------------------*-
+  48            ---- END OF FILE -------------------------------------------------
+  49          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     17    ----
+   CODE SIZE        =     30    ----
    CONSTANT SIZE    =   ----    ----
+C51 COMPILER V9.54   DELAY                                                                 04/01/2016 10:06:44 PAGE 2   
+
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =      2    ----

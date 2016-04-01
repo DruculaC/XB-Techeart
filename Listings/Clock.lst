@@ -1,0 +1,90 @@
+C51 COMPILER V9.54   CLOCK                                                                 04/01/2016 10:06:44 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE CLOCK
+OBJECT MODULE PLACED IN .\Objects\Clock.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Clock.c ROM(COMPACT) OPTIMIZE(8,SPEED) BROWSE DEBUG 
+                    -OBJECTEXTEND PRINT(.\Listings\Clock.lst) TABS(3) OBJECT(.\Objects\Clock.obj)
+
+line level    source
+
+   1          /*------------------------------------------------------------------*-
+   2             A.C (v1.00)
+   3            ------------------------------------------------------------------
+   4             Simple switch interface code, with software debounce.
+   5          
+   6             COPYRIGHT
+   7             ---------
+   8             This code is copyright (c) 2001 by Richard Zhang.
+   9          -*------------------------------------------------------------------*/
+  10          
+  11          #include "Main.h"
+  12          #include "Port.h"
+  13          
+  14          #include "Clock.h"
+  15          #include "Battery.h"
+  16          #include "Speech.h"
+  17          
+  18          // ------ Public variable definitions ------------------------------
+  19          extern bit Alarm_G;
+  20          
+  21          // ------ Public variable declarations -----------------------------
+  22          
+  23          // ------ Private variables ----------------------------------------
+  24          tByte Clock_second;
+  25          tByte Clock_minute;
+  26          
+  27          // ------ Private constants ----------------------------------------
+  28          
+  29          /*------------------------------------------------------------------*-
+  30            Clock_Init()
+  31            Initialisation function for the switch library.
+  32          -*------------------------------------------------------------------*/
+  33          void Clock_Init(void)
+  34             {
+  35   1         Clock_second = 0;
+  36   1         Clock_minute = 0;
+  37   1         }
+  38          
+  39          /*------------------------------------------------------------------*-
+  40            Clock_update()
+  41            Initialisation function for the switch library.
+  42            1s/ticket.
+  43          -*------------------------------------------------------------------*/
+  44          void Clock_update(void)
+  45             {
+  46   1         Clock_second += 1;
+  47   1      
+  48   1         if(Clock_second >= 60)
+  49   1            {
+  50   2            Clock_second = 0;
+  51   2            Clock_minute += 1;
+  52   2            if(Clock_minute >= 60)
+  53   2               {
+  54   3               Clock_minute = 0;
+C51 COMPILER V9.54   CLOCK                                                                 04/01/2016 10:06:44 PAGE 2   
+
+  55   3               }
+  56   2            
+  57   2            // Detect battery every minute.
+  58   2            Battery_detection();          
+  59   2            }
+  60   1         }
+  61          
+  62          /*------------------------------------------------------------------*-
+  63            ---- END OF FILE -------------------------------------------------
+  64          -*------------------------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     33    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,10 +1,10 @@
-C51 COMPILER V9.54   ISP_DATAFLASH                                                         03/23/2016 11:49:19 PAGE 1   
+C51 COMPILER V9.54   ISP_DATAFLASH                                                         04/01/2016 10:06:43 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE ISP_DATAFLASH
 OBJECT MODULE PLACED IN .\Objects\ISP_DataFlash.obj
-COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ISP_DataFlash.c ROM(SMALL) OPTIMIZE(8,SPEED) BROWSE 
-                    -DEBUG OBJECTEXTEND PRINT(.\Listings\ISP_DataFlash.lst) TABS(3) OBJECT(.\Objects\ISP_DataFlash.obj)
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ISP_DataFlash.c ROM(COMPACT) OPTIMIZE(8,SPEED) BROWS
+                    -E DEBUG OBJECTEXTEND PRINT(.\Listings\ISP_DataFlash.lst) TABS(3) OBJECT(.\Objects\ISP_DataFlash.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   49   1      }
   50          
   51          void Flash_Write_Data(unsigned int address,unsigned char dat)
-C51 COMPILER V9.54   ISP_DATAFLASH                                                         03/23/2016 11:49:19 PAGE 2   
+C51 COMPILER V9.54   ISP_DATAFLASH                                                         04/01/2016 10:06:43 PAGE 2   
 
   52          {
   53   1         Enable_ISP();
@@ -89,59 +89,14 @@ line level    source
   74             return dat;    
   75          }
   76          */
-  77          /*---------------------------------------------------------------
-  78             Self_learn_programming(void)
-  79             自学习功能，将密码烧录到flash ROM中
-  80          
-  81          void Self_learn_programming(void)
-  82             {
-  83             Flash_Page_Erase(0x3000);
-  84             #ifdef ID
-  85             Flash_Write_Data(0x3000, received_data_buffer[0]);    
-  86             Flash_Write_Data(0x3001, received_data_buffer[1]);    
-  87             Flash_Write_Data(0x3002, received_data_buffer[2]);    
-  88             Flash_Write_Data(0x3003, received_data_buffer[3]);    
-  89             Flash_Write_Data(0x3004, received_data_buffer[4]);
-  90             Flash_Write_Data(0x3005, received_data_buffer[5]);
-  91             #endif
-  92             #ifdef WX
-  93             Flash_Write_Data(0x3000, received_data_buffer[2]);    
-  94             Flash_Write_Data(0x3001, received_data_buffer[3]);    
-  95             Flash_Write_Data(0x3002, received_data_buffer[4]);    
-  96             Flash_Write_Data(0x3003, received_data_buffer[5]);    
-  97             Flash_Write_Data(0x3004, received_data_buffer[6]);
-  98          // Flash_Write_Data(0x3005, received_data_buffer[7]);
-  99          // Flash_Write_Data(0x3006, received_data_buffer[0]);    
- 100          // Flash_Write_Data(0x3007, received_data_buffer[1]);    
- 101             #endif
- 102             }
- 103          ----------------------------------------------------------------*/
- 104          
- 105          /*---------------------------------------------------------------
- 106             Self_learn_programming(void)
- 107             自学习功能，将密码烧录到flash ROM中
- 108          
- 109          void Self_learn_programming_F(void)
- 110             {
- 111             Flash_Page_Erase(0x3000);
- 112             Flash_Write_Data(0x3000, received_data_buffer[2]);    
- 113             Flash_Write_Data(0x3001, received_data_buffer[3]);    
-C51 COMPILER V9.54   ISP_DATAFLASH                                                         03/23/2016 11:49:19 PAGE 3   
-
- 114             Flash_Write_Data(0x3002, received_data_buffer[4]);    
- 115             Flash_Write_Data(0x3003, received_data_buffer[5]);    
- 116             Flash_Write_Data(0x3004, received_data_buffer[6]);
- 117             Flash_Write_Data(0x3005, received_data_buffer[7]);
- 118             }
- 119          ----------------------------------------------------------------*/
- 120             
- 121          /*---------------------------------------------------
- 122             end of file
- 123          ----------------------------------------------------*/
+  77             
+  78          /*---------------------------------------------------
+  79             end of file
+  80          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     96    ----
+   CODE SIZE        =    104    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

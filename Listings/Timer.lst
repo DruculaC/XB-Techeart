@@ -1,10 +1,10 @@
-C51 COMPILER V9.54   TIMER                                                                 03/23/2016 11:49:18 PAGE 1   
+C51 COMPILER V9.54   TIMER                                                                 04/01/2016 10:06:43 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE TIMER
 OBJECT MODULE PLACED IN .\Objects\Timer.obj
-COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Timer.c ROM(SMALL) OPTIMIZE(8,SPEED) BROWSE DEBUG OB
-                    -JECTEXTEND PRINT(.\Listings\Timer.lst) TABS(3) OBJECT(.\Objects\Timer.obj)
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Timer.c ROM(COMPACT) OPTIMIZE(8,SPEED) BROWSE DEBUG 
+                    -OBJECTEXTEND PRINT(.\Listings\Timer.lst) TABS(3) OBJECT(.\Objects\Timer.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52   1         // Interrupt Timer 0 enabled
   53   1         ET0  = 1;
   54   1         }
-C51 COMPILER V9.54   TIMER                                                                 03/23/2016 11:49:18 PAGE 2   
+C51 COMPILER V9.54   TIMER                                                                 04/01/2016 10:06:43 PAGE 2   
 
   55          
   56          /*------------------------------------------------------------------*-
@@ -123,10 +123,10 @@ line level    source
  111   1         tByte Index;
  112   1         // Reload the Timer0 value
  113   1         hSCH_Manual_Timer0_Reload();
- 114   1      
+ 114   1         
  115   1         // NOTE: calculations are in *TICKS* (not milliseconds)
  116   1         for (Index = 0; Index < hSCH_MAX_TASKS; Index++)
-C51 COMPILER V9.54   TIMER                                                                 03/23/2016 11:49:18 PAGE 3   
+C51 COMPILER V9.54   TIMER                                                                 04/01/2016 10:06:43 PAGE 3   
 
  117   1            {
  118   2            // Check if there is a task at this location
@@ -158,7 +158,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    206    ----
+   CODE SIZE        =    211    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

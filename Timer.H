@@ -11,7 +11,7 @@
 
 //-----public function prototype----------------------
 
-void Timer0_Init(const tWord Tick_ms_T0);
+void Timer0_Init(const tWord Tick_us_T0);
 void hSCH_Manual_Timer0_Reload();
 void hSCH_Start(void);
 

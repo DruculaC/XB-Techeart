@@ -11,45 +11,40 @@
 
 #include "hSch51.h"
 #include "Timer.h"
-#include "Elecmotor.h"
 #include "Button.h"
 #include "UART.h"
-#include "communication.h"
+#include "Selflearn.h"
 #include "Speech.h"
-#include "Function.h"
-#include "Sensor.h"
+#include "IIC.h"
+#include "KBI.h"
 #include "Alarm.h"
+#include "Clock.h"
 #include "Battery.h"
-#include "Function.h"
-#include "Function-S.h"
 
 /* ............................................................... */
 
 void main(void)
-   {
-	// Initialize all tasks
-	Speech_Init();
-	UART_Init(BAUD9600);
-	Timer0_Init(150);   		// 160us/tickets
-	Elecmotor_Init();
+   {	
+	Timer0_Init(500);
+	UART_Init(9600);
 	Button_Init();
-	Battery_Init();
-	Sensor_Init();
+	Selflearn_Init();
+	Speech_Init();
+   IIC_Init();
+	KBI_Init();
 	Alarm_Init();
-	Function_init();
-	Function_S_init();
-
-   // Add Tasks
-   hSCH_Add_Task(Button_update, 1500, 300, 1);		// 50ms/ticket
-   hSCH_Add_Task(Speech_update, 1000, 3000, 1);		// 0.5s/ticket
-//   hSCH_Add_Task(Sensor_update, 2000, 1, 1);			// 1ms/ticket
-//	  hSCH_Add_Task(Alarm_update, 3000, 2000, 1);		// 1s/ticket
-//   hSCH_Add_Task(Function_update, 1500, 4000, 1);	// 2s/ticket
-//   hSCH_Add_Task(Function_s_update, 2000, 1, 1);	// 1ms/ticket
-//   hSCH_Add_Task(Elecmotor_update, 1000, 10000, 1);		// 1ms/ticket
+	Clock_Init();
+	Battery_Init();
+	
+   // Add Tasks	
+	hSCH_Add_Task(Button_update, 1500, 200, 1);		// 100ms/ticket
+   hSCH_Add_Task(Speech_update, 1600, 1000, 1);		// 0.5s/ticket
+   hSCH_Add_Task(Alarm_update, 1700, 1000, 1);		// 0.5s/ticket
+	hSCH_Add_Task(Clock_update, 1800, 2000, 1);		// 1s/ticket
 	
 	// Start the program.
 	hSCH_Start();
+	
 	while(1)
       {
 		// Excute the program.
@@ -57,5 +52,5 @@ void main(void)
 		}
    }
 /*------------------------------------------------------------------*-
-  ---- END OF FILE -------------------------------------------------
+  ---- END OF FILE ---------------------------------------------------
 -*------------------------------------------------------------------*/

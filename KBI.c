@@ -11,29 +11,43 @@
 #include "Main.h"
 #include "Port.h"
 
-#include "Template.h"
+#include "KBI.h"
 
 // ------ Public variable definitions ------------------------------
-bit Sw_pressed_G = 0; // The current switch status
-
+bit KBI_G;
 // ------ Public variable declarations -----------------------------
-//extern bit xx;
+
 // ------ Private variables ----------------------------------------
-static bit LED_state_G;
 
 // ------ Private constants ----------------------------------------
-// SW_THRES must be > 1 for correct debounce behaviour
-#define SW_THRES (3)
 
 /*------------------------------------------------------------------*-
-  SWITCH_Init()
+  KBI_Init()
   Initialisation function for the switch library.
 -*------------------------------------------------------------------*/
-void SWITCH_Init(void)
-   {
-   Sw_pin = 1; // Use this pin for input
-   }
+void KBI_Init(void)
+	{	
+	KBI_G = 0;
+	
+	// Set PIN23, PIN24 to low voltage interrupt.
+	KBLS1 |= 0x18;
+	KBLS0 |= 0x18;
+	// Set KBI flag and enable.
+	KBIF &= 0xe7;
+	KBIE |= 0x18;
+	EKB = 1;	
+	}
 
+/*-----------------------------------------------------------
+	KBI_ISR()
+	键盘中断，使芯片从省电模式中唤醒
+-----------------------------------------------------------*/
+void KBI_ISR(void) interrupt 7
+	{
+	KBIF &= 0xe7;
+	
+	KBI_G = 1;
+	}
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

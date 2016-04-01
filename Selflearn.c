@@ -44,7 +44,7 @@ void Selflearn_Init(void)
 -*------------------------------------------------------------------*/
 void Self_learn_action(void)
 	{
-	if((Passwd_reed_switch_port)&&(Received_finished_G))
+	if((!Passwd_reed_switch_port)&&(Received_finished_G))
 		{
 		Goto_speech(Ticktack);
 		Self_learn_programming();
@@ -65,6 +65,7 @@ void Self_learn_programming(void)
 	Flash_Write_Data(0x3003, Received_cache[2]);		
 	Flash_Write_Data(0x3004, Received_cache[1]);
 	Flash_Write_Data(0x3005, Received_cache[0]);
+	
 	}
 
 /*------------------------------------------------------------------*-

@@ -14,16 +14,13 @@
 #include "Template.h"
 
 // ------ Public variable definitions ------------------------------
-bit Sw_pressed_G = 0; // The current switch status
 
 // ------ Public variable declarations -----------------------------
-//extern bit xx;
+
 // ------ Private variables ----------------------------------------
-static bit LED_state_G;
 
 // ------ Private constants ----------------------------------------
-// SW_THRES must be > 1 for correct debounce behaviour
-#define SW_THRES (3)
+
 
 /*------------------------------------------------------------------*-
   SWITCH_Init()
@@ -31,7 +28,6 @@ static bit LED_state_G;
 -*------------------------------------------------------------------*/
 void SWITCH_Init(void)
    {
-   Sw_pin = 1; // Use this pin for input
    }
 
 

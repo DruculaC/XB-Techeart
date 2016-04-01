@@ -65,7 +65,7 @@ void  hSCH_Report_Status(void);
 // during the execution of the program
 //
 // MUST BE ADJUSTED FOR EACH NEW PROJECT
-#define hSCH_MAX_TASKS   (3)   
+#define hSCH_MAX_TASKS   (5)   
  
 #endif
                               
