@@ -29,6 +29,7 @@ sbit Passwd_reed_switch_port = P2^5;	// P2.5, PIN16, reed switch in board,
 sbit Speech_RST = P2^0;		// P2.0, PIN1, reset 4031C
 sbit Speech_data = P2^1;	// P2.1, PIN2, 4031C data
 sbit Speech_EN = P1^4;		// P1.4, PIN10, EN for power ampilfier.
+sbit Speech_busy = P0^7;	// P0.7, PIN19, 4031C Flag for speeching busy, 1 for speeching, 0 for no speech.
 
 // ------ IIC.c ----------------------------------------------------
 // Define in N78E81x.h.
@@ -43,6 +44,9 @@ sbit Speech_EN = P1^4;		// P1.4, PIN10, EN for power ampilfier.
 // ------ Battery.c -------------------------------------------
 // No need to define.
 // P0.6, PIN20, ADC5, battery input pin.
+
+// ------ Receiver.c ----------------------------------------------
+sbit RXD_power_EN = P0^5;	// P0.5, PIN22, Enable pin for RXD and ID receiver.
 
 sbit test_port = P2^4;		// P2.4, PIN15
 

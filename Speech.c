@@ -23,7 +23,6 @@ bit Speech_blocked_G;	// Block other speech program.
 tByte Speech_scenario;
 tByte Speech_time;
 tByte Speech_time_thres;
-bit Firsttime_power_up_G;
 
 // ------ Private constants ----------------------------------------
 
@@ -33,12 +32,17 @@ bit Firsttime_power_up_G;
 -*------------------------------------------------------------------*/
 void Speech_Init(void)
    {	
+	// Set P0.7 PIN19 to input mode, Speech_busy
+	P0M1 |= 0x80;
+	P0M2 &= 0x7f;
+
 	Speech_EN = 0;
-	Speech_RST = 1;	
+	Speech_RST = 1;
 	Speech_data = 0;
 	Speech_time = 0;
+	Speech_time_thres = 10;
 	
-	Firsttime_power_up_G = 1;
+	Goto_speech(No_voice);
 	}
 
 /*--------------------------------------------------
@@ -48,10 +52,8 @@ void Send_speech(tByte count_a, tByte time_b)
 	{
 	tByte i;
 	Speech_EN = 1;
-	Speech_RST = 0;
-	Delay(LOOP_TIMEOUT_INIT_050ms);
-	Speech_RST = 1;
-	Delay(LOOP_TIMEOUT_INIT_050ms);
+	Delay(LOOP_TIMEOUT_INIT_500ms);
+	Speech_reset();
 	for(i=0; i < count_a; i++)
 		{
 		Speech_data = 1; 
@@ -59,10 +61,11 @@ void Send_speech(tByte count_a, tByte time_b)
 		Speech_data = 0; 
 		Delay(LOOP_TIMEOUT_INIT_001ms);
 		}
-	Speech_time_thres = time_b;
+
+//	Speech_time_thres = time_b;
+	time_b = 0;
 	
-	if(Speech_scenario != Tick)
-		Speech_scenario = 0;
+	Speech_scenario = 0;
 	}
 
 /*----------------------------------------------------------------
@@ -80,21 +83,33 @@ void Goto_speech(tByte count_b)
 ------------------------------------------------------------------*/
 void Speech_update(void)
 	{
+//	Speech_s_update();
 	Speech_broadcast();
 	}
 	
 /*----------------------------------------------------------------
+	Speech_reset()
+	Send speech reset signal.
+------------------------------------------------------------------*/
+void Speech_reset(void)
+	{
+	Speech_RST = 0;
+	Delay(LOOP_TIMEOUT_INIT_050ms);
+	Speech_RST = 1;
+	Delay(LOOP_TIMEOUT_INIT_050ms);
+	}
+
+/*----------------------------------------------------------------
 	Speech_s_update_s()
 	Instant speech update, 1ms/ticket, for now, only "Tich" voice.
-------------------------------------------------------------------*/
 void Speech_s_update(void)
 	{
 	if(Speech_scenario == Tick)
 		{
-		if(Speech_EN)
+		if(Speech_busy)
 			{
 			Speech_time += 1;
-			if(Speech_time > Speech_time_thres)
+			if(Speech_time > 100)
 				{
 				Speech_time = 0;
 				Speech_EN = 0;
@@ -114,6 +129,7 @@ void Speech_s_update(void)
 			}		
 		}
 	}
+------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------
 	Speech_broadcast()
@@ -121,187 +137,196 @@ void Speech_s_update(void)
 ------------------------------------------------------------------*/
 void Speech_broadcast(void)
 	{	
-	if(Speech_EN)
+	if((Speech_busy)&&(Speech_scenario != Tick))
 		{
 		Speech_time += 1;
-		if(Speech_time > Speech_time_thres)
+		if(Speech_time > 100)
 			{
 			Speech_time = 0;
 			Speech_EN = 0;
 			}
 		}
 	else
-		{
+		{		
+		// If 4031C no busy signal, then reset enable.
+		Speech_time = 0;
+		Speech_EN = 0;
+		
 		switch(Speech_scenario)
 			{
 			case No_voice:
 				{
-				Send_speech(No_voice, 1);
+				Send_speech(No_voice, 5);
 				}
 			break;
 			case First_touch:
 				{
-				Send_speech(First_touch, 3);
-			}
+				Send_speech(First_touch, 15);
+				}
 			break;
 			case Stolen_motor:
 				{
-				Send_speech(Stolen_motor, 9);
+				Send_speech(Stolen_motor, 45);
 				}
 			break;
 			case Appreciate_life:
 				{
-				Send_speech(Appreciate_life, 5);
+				Send_speech(Appreciate_life, 25);
 				}
 			break;
 			case Shengbaolong_brand:
 				{
-				Send_speech(Shengbaolong_brand, 2);
+				Send_speech(Shengbaolong_brand, 10);
 				}
 			break;
 			case Reminder:
 				{
-				Send_speech(Reminder, 2);
+				Send_speech(Reminder, 10);
 				}
 			break;
 			case Siren:
 				{
-				Send_speech(Siren, 1);
+				Send_speech(Siren, 5);
 				}
 			break;
 			case Battery_can_hold:
 				{
-				Send_speech(Battery_can_hold, 4);
+				Send_speech(Battery_can_hold, 20);
 				}
 			break;
 			case Open_lock:
 				{
-				Send_speech(Open_lock, 2);
+				Send_speech(Open_lock, 10);
 				}
 			break;
 			case Close_lock:
 				{
-				Send_speech(Close_lock, 3);
+				Send_speech(Close_lock, 15);
 				}
 			break;
 			case Kilometer:
 				{
-				Send_speech(Kilometer, 1);
+				Send_speech(Kilometer, 5);
 				}
 			break;
 			case One:
 				{
-				Send_speech(One, 1);
+				Send_speech(One, 5);
 				}
 			break;
 			case Two:
 				{
-				Send_speech(Two, 1);
+				Send_speech(Two, 5);
 				}
 			break;
 			case Three:
 				{
-				Send_speech(Three, 1);
+				Send_speech(Three, 5);
 				}
 			break;
 			case Four:
 				{
-				Send_speech(Four, 1);
+				Send_speech(Four, 5);
 				}
 			break;
 			case Five:
 				{
-				Send_speech(Five, 1);
+				Send_speech(Five, 5);
 				}
 			break;
 			case Six:
 				{
-				Send_speech(Six, 1);
+				Send_speech(Six, 5);
 				}
 			break;
 			case Seven:
 				{
-				Send_speech(Seven, 1);
+				Send_speech(Seven, 5);
 				}
 			break;
 			case Eight:
 				{
-				Send_speech(Eight, 1);
+				Send_speech(Eight, 5);
 				}
 			break;
 			case Nine:
 				{
-				Send_speech(Nine, 1);
+				Send_speech(Nine, 5);
 				}
 			break;
 			case Ten:
 				{
-				Send_speech(Ten, 1);
+				Send_speech(Ten, 5);
 				}
 			break;
 			case Second_touch:
 				{
-				Send_speech(Second_touch, 7);
+				Send_speech(Second_touch, 35);
 				}
 			break;
 			case System_closed:
 				{
-				Send_speech(System_closed, 4);
+				Send_speech(System_closed, 20);
 				}
 			break;
 			case Tailing_brand:
 				{
-				Send_speech(Tailing_brand, 1);
+				Send_speech(Tailing_brand, 5);
 				}
 			break;
 			case Xinri_brand:
 				{
-				Send_speech(Xinri_brand, 1);
+				Send_speech(Xinri_brand, 5);
 				}
 			break;
+			case Tick:
+				{
+				Send_speech(Tick, 10);
+				}
+			break;			
 			case Ticktack:
 				{
-				Send_speech(Ticktack, 2);
+				Send_speech(Ticktack, 15);
 				}
 			break;		
 			case Aima_brand:
 				{
-				Send_speech(Aima_brand, 2);
+				Send_speech(Aima_brand, 10);
 				}
 			break;
 			case System_open:
 				{
-				Send_speech(System_open, 4);
+				Send_speech(System_open, 20);
 				}
 			break;
 			case Hundred:
 				{
-				Send_speech(Hundred, 1);
+				Send_speech(Hundred, 5);
 				}
 			break;
 			case Zero:
 				{
-				Send_speech(Zero, 1);
+				Send_speech(Zero, 5);
 				}
 			break;
 			case Fengyang_brand:
 				{
-				Send_speech(Fengyang_brand, 1);
+				Send_speech(Fengyang_brand, 5);
 				}
 			break;
 			case Kaiqi_brand:
 				{
-				Send_speech(Kaiqi_brand, 1);
+				Send_speech(Kaiqi_brand, 5);
 				}
 			break;
 			case Kangjing_brand:
 				{
-				Send_speech(Kangjing_brand, 1);
+				Send_speech(Kangjing_brand, 5);
 				}
 			break;
 			case Xiangniu_brand:
 				{
-				Send_speech(Xiangniu_brand, 1);
+				Send_speech(Xiangniu_brand, 5);
 				}
 			break;
 			}		

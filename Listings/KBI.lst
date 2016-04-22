@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   KBI                                                                   04/01/2016 10:06:44 PAGE 1   
+C51 COMPILER V9.54   KBI                                                                   04/22/2016 14:54:24 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE KBI
@@ -22,58 +22,151 @@ line level    source
   12          #include "Port.h"
   13          
   14          #include "KBI.h"
-  15          
-  16          // ------ Public variable definitions ------------------------------
-  17          bit KBI_G;
-  18          // ------ Public variable declarations -----------------------------
-  19          
-  20          // ------ Private variables ----------------------------------------
-  21          
-  22          // ------ Private constants ----------------------------------------
-  23          
-  24          /*------------------------------------------------------------------*-
-  25            KBI_Init()
-  26            Initialisation function for the switch library.
-  27          -*------------------------------------------------------------------*/
-  28          void KBI_Init(void)
-  29             {  
-  30   1         KBI_G = 0;
-  31   1         
-  32   1         // Set PIN23, PIN24 to low voltage interrupt.
-  33   1         KBLS1 |= 0x18;
-  34   1         KBLS0 |= 0x18;
-  35   1         // Set KBI flag and enable.
-  36   1         KBIF &= 0xe7;
-  37   1         KBIE |= 0x18;
-  38   1         EKB = 1; 
-  39   1         }
-  40          
-  41          /*-----------------------------------------------------------
-  42             KBI_ISR()
-  43             键盘中断，使芯片从省电模式中唤醒
-  44          -----------------------------------------------------------*/
-  45          void KBI_ISR(void) interrupt 7
-  46             {
-  47   1         KBIF &= 0xe7;
-  48   1         
-  49   1         KBI_G = 1;
-  50   1         }
-  51          
-  52          /*------------------------------------------------------------------*-
-  53            ---- END OF FILE -------------------------------------------------
-  54          -*------------------------------------------------------------------*/
-C51 COMPILER V9.54   KBI                                                                   04/01/2016 10:06:44 PAGE 2   
+  15          #include "Receiver.h"
+  16          #include "IIC.h"
+  17          #include "Speech.h"
+  18          
+  19          // ------ Public variable definitions ------------------------------
+  20          bit KBI_G;
+  21          // ------ Public variable declarations -----------------------------
+  22          extern bit System_EN_G;
+  23          extern bit hSCH_sleep_EN;
+  24          
+  25          // ------ Private variables ----------------------------------------
+  26          tByte Sensor_Int_SourceSystem;
+  27          tByte Sensor_Int_SourceMFF;
+  28          tByte Sensor_Int_SourcePulse;
+  29          tByte Sensor_Int_SourceTransient;
+  30          tByte Sensor_Int_SourcePL;
+  31          
+  32          bit Alarm_G;
+  33          bit Device_layflat_G;
+  34          // ------ Private constants ----------------------------------------
+  35          
+  36          /*------------------------------------------------------------------*-
+  37            KBI_Init()
+  38            Initialisation function for the switch library.
+  39          -*------------------------------------------------------------------*/
+  40          void KBI_Init(void)
+  41             {
+  42   1         KBI_G = 0;
+  43   1         
+  44   1         // Set P0.4, PIN23 to input mode, Sensor_INT1
+  45   1         P0M1 |= 0x10;
+  46   1         P0M2 &= 0xef;
+  47   1      
+  48   1         // Set PIN23, PIN24 to low voltage interrupt, PIN26 to high pulse interrupt.
+  49   1         KBLS1 |= 0x18;
+  50   1         KBLS0 |= 0x1a;
+  51   1         // Set KBI flag and enable.
+  52   1         KBIF &= 0xe5;
+  53   1         KBIE |= 0x1a;
+  54   1         EKB = 1;
+C51 COMPILER V9.54   KBI                                                                   04/22/2016 14:54:24 PAGE 2   
 
+  55   1      
+  56   1         Sensor_Int_SourceSystem = 0;
+  57   1         Sensor_Int_SourceMFF = 0;
+  58   1         Sensor_Int_SourcePulse = 0;
+  59   1         Sensor_Int_SourceTransient = 0;
+  60   1         Sensor_Int_SourcePL = 0;
+  61   1         Alarm_G = 0;
+  62   1         Device_layflat_G = 0;
+  63   1         }
+  64          
+  65          /*-----------------------------------------------------------
+  66             KBI_ISR()
+  67             键盘中断，使芯片从省电模式中唤醒
+  68          -----------------------------------------------------------*/
+  69          void KBI_ISR(void) interrupt 7
+  70             {
+  71   1         KBIF &= 0xe5;
+  72   1      
+  73   1         // Enable PD sleep mode.
+  74   1         hSCH_sleep_EN = 1;
+  75   1         
+  76   1         Sensor_Int_SourceSystem = 0;
+  77   1         Sensor_Int_SourceMFF = 0;
+  78   1         Sensor_Int_SourceTransient = 0;
+  79   1         Sensor_Int_SourcePulse = 0;
+  80   1         Sensor_Int_SourcePL = 0;
+  81   1         
+  82   1         // Read INT_SOURCE register(0x0c), determine source of interrupt.
+  83   1         Sensor_Int_SourceSystem = Single_Read_IIC(0x0c);
+  84   1         
+  85   1         // Set up case statement to service all possible interrupts.
+  86   1         // If it is double tap pulse.
+  87   1         if((Sensor_Int_SourceSystem &0x08) == 0x08)
+  88   1            {
+  89   2            // If it is ta set the interrupt, read FF_MT_SRC register(0x16).
+  90   2            Sensor_Int_SourcePulse = Single_Read_IIC(0x22);
+  91   2            if((Sensor_Int_SourcePulse &0x80) == 0x80)
+  92   2               {           
+  93   3               RXD_power_on();
+  94   3               }
+  95   2            return;
+  96   2            }
+  97   1      
+  98   1         // If it is motion and free fall.
+  99   1         if((Sensor_Int_SourceSystem &0x04) == 0x04)
+ 100   1            {
+ 101   2            // If it is MT_FF set the interrupt, read FF_MT_SRC register(0x16).
+ 102   2            Sensor_Int_SourceMFF = Single_Read_IIC(0x16);
+ 103   2            if(((Sensor_Int_SourceMFF &0x80) == 0x80)&&(System_EN_G))
+ 104   2               {           
+ 105   3               Alarm_G = 1;
+ 106   3               }
+ 107   2            }
+ 108   1         // If it is transient.
+ 109   1         if((Sensor_Int_SourceSystem &0x20) == 0x20)
+ 110   1            {
+ 111   2            // If it is MT_FF set the interrupt, read FF_MT_SRC register(0x16).
+ 112   2            Sensor_Int_SourceTransient = Single_Read_IIC(0x1e);
+ 113   2            if(((Sensor_Int_SourceTransient &0x40) == 0x40)&&(System_EN_G)&&(Device_layflat_G))
+ 114   2               {           
+ 115   3               Alarm_G = 1;
+ 116   3               }
+C51 COMPILER V9.54   KBI                                                                   04/22/2016 14:54:24 PAGE 3   
+
+ 117   2            }
+ 118   1         
+ 119   1         // If it is Portait and Landscape.
+ 120   1         if((Sensor_Int_SourceSystem &0x10) == 0x10)
+ 121   1            {
+ 122   2            // If it is MT_FF set the interrupt, read FF_MT_SRC register(0x16).
+ 123   2            Sensor_Int_SourcePL = Single_Read_IIC(0x10);
+ 124   2            if((Sensor_Int_SourcePL &0x40) == 0x40)
+ 125   2               {           
+ 126   3               Device_layflat_G = 1;
+ 127   3               }
+ 128   2            else
+ 129   2               {
+ 130   3               Device_layflat_G = 0;
+ 131   3               }
+ 132   2               
+ 133   2            if(((Sensor_Int_SourcePL &0xc0) == 0x80)&&(System_EN_G))
+ 134   2               {
+ 135   3               Alarm_G = 1;
+ 136   3               }  
+ 137   2            }
+ 138   1      
+ 139   1         
+ 140   1         KBI_G = 1;
+ 141   1         }
+ 142          
+ 143          /*------------------------------------------------------------------*-
+ 144            ---- END OF FILE -------------------------------------------------
+ 145          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     23    ----
+   CODE SIZE        =    228    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =      5    ----
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =      1    ----
+   BIT SIZE         =      3    ----
 END OF MODULE INFORMATION.
 
 

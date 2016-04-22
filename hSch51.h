@@ -58,6 +58,7 @@ void  hSCH_Dispatch_Tasks(void);
 tByte hSCH_Add_Task(void (code *)(void), tWord, tWord, bit);  
 bit   hSCH_Delete_Task(tByte);
 void  hSCH_Report_Status(void);
+void hSCH_Go_To_Sleep(void);
 
 // ------ Public constants -----------------------------------------
 
@@ -65,7 +66,7 @@ void  hSCH_Report_Status(void);
 // during the execution of the program
 //
 // MUST BE ADJUSTED FOR EACH NEW PROJECT
-#define hSCH_MAX_TASKS   (5)   
+#define hSCH_MAX_TASKS   (4)   
  
 #endif
                               

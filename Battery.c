@@ -65,6 +65,7 @@ void Battery_detection(void)
 	// PIN21 voltage is 4.2V battery, it will change as time.
 	// Set low voltage is 3.3V/3.6V = 0.92, 0.92*1024=938(0x3aa)
 	if(Battery_ADC_result >= 0x3aa)
+//	if(Battery_ADC_result >= 0x34c)
 		{
 		// clear speech time for tick voice, broadcast tich speech in 100ms.
 		Speech_time = 0;		

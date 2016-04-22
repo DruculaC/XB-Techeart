@@ -12,8 +12,8 @@
 
 // ------ Public function prototypes -------------------------------
 void UART_Init(tWord Baudrate);
-void Sendbyte(tByte character);
-void Senddata(tByte *addr, tByte datalength);
+// void Sendbyte(tByte character);
+// void Senddata(tByte *addr, tByte datalength);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

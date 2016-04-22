@@ -20,7 +20,6 @@
 
 // ------ Private variables ----------------------------------------
 tByte IIC_buffer[8];		// IIC buffer data.
-tByte CTRL_REG1_data;	// The data in CTRL_REG1.
 
 // ------ Private constants ----------------------------------------
 
@@ -28,27 +27,10 @@ tByte CTRL_REG1_data;	// The data in CTRL_REG1.
 /*------------------------------------------------------------------*-
   IIC_Init()
   Program for IIC send a whole byte, include start stop and ack
--*------------------------------------------------------------------*/
 void IIC_Init(void)
 	{
-	// Set the sensor in 100Hz ODR, Standby
-	Single_Write_IIC(0x2a, 0x18);
-	// ELE = 1, OAE = 1, enable X, Y, disable Z.
-	Single_Write_IIC(0x15, 0xd8);
-	// Threshold value is 1g for 0.063g/count.
-	Single_Write_IIC(0x17, 0x10);
-	// Debounce counter is 300ms, the value is 300ms/10ms = 30, 0x1e.
-	Single_Write_IIC(0x18, 0x0a);
-	// Enable FF_MT interrupt function.
-	Single_Write_IIC(0x2d, 0x04);
-	// Route the FF_MT interrupt to INT1 hardware pin.
-	Single_Write_IIC(0x2e, 0x04);
-	// Read the CTRL_REG1.
-	CTRL_REG1_data = Single_Read_IIC(0x2a);
-	CTRL_REG1_data |= 0x01;
-	// Set the sensor in active mode.
-	Single_Write_IIC(0x2A, CTRL_REG1_data);
 	}
+-*------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------*-
   Single_Write_IIC()
@@ -84,7 +66,6 @@ tByte Single_Read_IIC(tByte REG_Address)
 /*------------------------------------------------------------------*-
   Multiple_read_IIC()
   Program for IIC read a whole byte, include start stop and ack
--*------------------------------------------------------------------*/
 void Multiple_read_IIC(tByte Start_add, tByte Read_count)
 {   
 	tByte i;
@@ -108,6 +89,7 @@ void Multiple_read_IIC(tByte Start_add, tByte Read_count)
 	IIC_Stop();                          	//Í£Ö¹ÐÅºÅ
 	Delay(LOOP_TIMEOUT_INIT_005ms);
 	}
+-*------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------*-
   IIC_SendByte()

@@ -438,6 +438,16 @@
               <FileType>1</FileType>
               <FilePath>.\Clock.c</FilePath>
             </File>
+            <File>
+              <FileName>Sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>Receiver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Receiver.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

@@ -12,6 +12,8 @@
 ".\Objects\KBI.obj",
 ".\Objects\Alarm.obj",
 ".\Objects\Battery.obj",
-".\Objects\Clock.obj" 
+".\Objects\Clock.obj",
+".\Objects\Sensor.obj",
+".\Objects\Receiver.obj" 
 TO ".\Objects\XB-Techeart" 
 PRINT(".\Listings\XB-Techeart.m51") RAMSIZE(256) 

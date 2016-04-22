@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   BATTERY                                                               04/01/2016 10:06:44 PAGE 1   
+C51 COMPILER V9.54   BATTERY                                                               04/22/2016 14:54:24 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE BATTERY
@@ -62,7 +62,7 @@ line level    source
   52            Battery_detection()
   53            Initialisation function for the switch library.
   54            1 minute/ticket.
-C51 COMPILER V9.54   BATTERY                                                               04/01/2016 10:06:44 PAGE 2   
+C51 COMPILER V9.54   BATTERY                                                               04/22/2016 14:54:24 PAGE 2   
 
   55          -*------------------------------------------------------------------*/
   56          void Battery_detection(void)
@@ -77,34 +77,35 @@ line level    source
   65   1         // PIN21 voltage is 4.2V battery, it will change as time.
   66   1         // Set low voltage is 3.3V/3.6V = 0.92, 0.92*1024=938(0x3aa)
   67   1         if(Battery_ADC_result >= 0x3aa)
-  68   1            {
-  69   2            // clear speech time for tick voice, broadcast tich speech in 100ms.
-  70   2            Speech_time = 0;     
-  71   2            Goto_speech(Tick);
-  72   2            }
-  73   1         }
-  74          
-  75          /*------------------------------------------------------------------*-
-  76            ADC_ISR()
-  77            Initialisation function for the switch library.
-  78          -*------------------------------------------------------------------*/
-  79          void ADC_ISR(void) interrupt 11
-  80             {
-  81   1         ADCI = 0;      // Clear ADC flag (ADCI = 0)
-  82   1         ADCS = 0;      // ADC stop (ADCS = 0)
-  83   1         u16ADCL = ADCCON0;
-  84   1         u16ADCL = u16ADCL >> 6;                // ADC[1:0]
-  85   1      
-  86   1         u16ADC = ADCH;
-  87   1         u16ADC = (u16ADC << 2 ) + u16ADCL;     // ADC[9:2] + ADC[1:0]
-  88   1         
-  89   1         // Get the battery voltage every minute.
-  90   1         Battery_ADC_result = u16ADC;
-  91   1         }
-  92          
-  93          /*------------------------------------------------------------------*-
-  94            ---- END OF FILE -------------------------------------------------
-  95          -*------------------------------------------------------------------*/
+  68   1      // if(Battery_ADC_result >= 0x34c)
+  69   1            {
+  70   2            // clear speech time for tick voice, broadcast tich speech in 100ms.
+  71   2            Speech_time = 0;     
+  72   2            Goto_speech(Tick);
+  73   2            }
+  74   1         }
+  75          
+  76          /*------------------------------------------------------------------*-
+  77            ADC_ISR()
+  78            Initialisation function for the switch library.
+  79          -*------------------------------------------------------------------*/
+  80          void ADC_ISR(void) interrupt 11
+  81             {
+  82   1         ADCI = 0;      // Clear ADC flag (ADCI = 0)
+  83   1         ADCS = 0;      // ADC stop (ADCS = 0)
+  84   1         u16ADCL = ADCCON0;
+  85   1         u16ADCL = u16ADCL >> 6;                // ADC[1:0]
+  86   1      
+  87   1         u16ADC = ADCH;
+  88   1         u16ADC = (u16ADC << 2 ) + u16ADCL;     // ADC[9:2] + ADC[1:0]
+  89   1         
+  90   1         // Get the battery voltage every minute.
+  91   1         Battery_ADC_result = u16ADC;
+  92   1         }
+  93          
+  94          /*------------------------------------------------------------------*-
+  95            ---- END OF FILE -------------------------------------------------
+  96          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

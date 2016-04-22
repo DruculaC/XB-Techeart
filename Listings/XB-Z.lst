@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   XB_Z                                                                  04/01/2016 10:06:43 PAGE 1   
+C51 COMPILER V9.54   XB_Z                                                                  04/22/2016 14:54:23 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE XB_Z
@@ -30,46 +30,51 @@ line level    source
   20          #include "Alarm.h"
   21          #include "Clock.h"
   22          #include "Battery.h"
-  23          
-  24          /* ............................................................... */
+  23          #include "Sensor.h"
+  24          #include "Receiver.h"
   25          
-  26          void main(void)
-  27             {  
-  28   1         Timer0_Init(500);
-  29   1         UART_Init(9600);
-  30   1         Button_Init();
-  31   1         Selflearn_Init();
-  32   1         Speech_Init();
-  33   1         IIC_Init();
-  34   1         KBI_Init();
-  35   1         Alarm_Init();
-  36   1         Clock_Init();
-  37   1         Battery_Init();
-  38   1         
-  39   1         // Add Tasks   
-  40   1         hSCH_Add_Task(Button_update, 1500, 200, 1);     // 100ms/ticket
-  41   1         hSCH_Add_Task(Speech_update, 1600, 1000, 1);    // 0.5s/ticket
-  42   1         hSCH_Add_Task(Alarm_update, 1700, 1000, 1);     // 0.5s/ticket
-  43   1         hSCH_Add_Task(Clock_update, 1800, 2000, 1);     // 1s/ticket
-  44   1         
-  45   1         // Start the program.
-  46   1         hSCH_Start();
-  47   1         
-  48   1         while(1)
-  49   1            {
-  50   2            // Excute the program.
-  51   2            hSCH_Dispatch_Tasks();
-  52   2            }
-  53   1         }
-  54          /*------------------------------------------------------------------*-
-C51 COMPILER V9.54   XB_Z                                                                  04/01/2016 10:06:43 PAGE 2   
+  26          /* ............................................................... */
+  27          
+  28          void main(void)
+  29             {  
+  30   1         // Initialization
+  31   1         Timer0_Init(500);
+  32   1         UART_Init(9600);
+  33   1         Button_Init();
+  34   1         Selflearn_Init();
+  35   1         Speech_Init();
+  36   1         Sensor_Init();
+  37   1         KBI_Init();
+  38   1         Alarm_Init();
+  39   1         Clock_Init();
+  40   1         Sensor_Init();
+  41   1         Receiver_init();
+  42   1         Battery_Init();
+  43   1         
+  44   1         // Add Tasks
+  45   1         hSCH_Add_Task(Button_update, 1550, 200, 1);     // 100ms/ticket
+  46   1         hSCH_Add_Task(Speech_update, 1600, 200, 1);     // 100ms/ticket
+  47   1         hSCH_Add_Task(Alarm_update, 1720, 1000, 1);     // 0.5s/ticket
+  48   1         hSCH_Add_Task(Clock_update, 1880, 2000, 1);     // 1s/ticket
+  49   1         
+  50   1         // Start the program.
+  51   1         hSCH_Start();
+  52   1         
+  53   1         while(1)
+  54   1            {
+C51 COMPILER V9.54   XB_Z                                                                  04/22/2016 14:54:23 PAGE 2   
 
-  55            ---- END OF FILE ---------------------------------------------------
-  56          -*------------------------------------------------------------------*/
+  55   2            // Excute the program.
+  56   2            hSCH_Dispatch_Tasks();
+  57   2            }
+  58   1         }
+  59          /*------------------------------------------------------------------*-
+  60            ---- END OF FILE ---------------------------------------------------
+  61          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    114    ----
+   CODE SIZE        =    120    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

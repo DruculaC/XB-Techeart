@@ -12,11 +12,13 @@
 void Speech_Init(void);
 void Send_speech(tByte count_a, tByte time_b);
 void Speech_update(void);
-void Speech_s_update(void);
 void Goto_speech(tByte count_b);
 void Speech_broadcast(void);
+void Speech_reset(void);
+void Speech_s_update(void);
 
 // ------ Public constants -----------------------------------------
+
 #define No_voice (1)
 #define First_touch (2)
 #define Stolen_motor (3)

@@ -1,0 +1,154 @@
+C51 COMPILER V9.54   SENSOR                                                                04/22/2016 14:54:25 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE SENSOR
+OBJECT MODULE PLACED IN .\Objects\Sensor.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE Sensor.c ROM(COMPACT) OPTIMIZE(8,SPEED) BROWSE DEBUG
+                    - OBJECTEXTEND PRINT(.\Listings\Sensor.lst) TABS(3) OBJECT(.\Objects\Sensor.obj)
+
+line level    source
+
+   1          /*------------------------------------------------------------------*-
+   2             A.C (v1.00)
+   3            ------------------------------------------------------------------
+   4             Simple switch interface code, with software debounce.
+   5          
+   6             COPYRIGHT
+   7             ---------
+   8             This code is copyright (c) 2001 by Richard Zhang.
+   9          -*------------------------------------------------------------------*/
+  10          
+  11          #include "Main.h"
+  12          #include "Port.h"
+  13          
+  14          #include "Sensor.h"
+  15          #include "IIC.h"
+  16          
+  17          // ------ Public variable definitions ------------------------------
+  18          
+  19          // ------ Public variable declarations -----------------------------
+  20          
+  21          // ------ Private variables ----------------------------------------
+  22          tByte CTRL_REG1_data;   // The data in CTRL_REG1.
+  23          
+  24          // ------ Private constants ----------------------------------------
+  25          
+  26          
+  27          /*------------------------------------------------------------------*-
+  28            Sensor_Init()
+  29            Initialisation function for the switch library.
+  30          -*------------------------------------------------------------------*/
+  31          void Sensor_Init(void)
+  32             {
+  33   1         // Set the sensor in 400Hz ODR, Standby
+  34   1         Single_Write_IIC(0x2a, 0x08);
+  35   1         // Set the sensor in LP mode.
+  36   1         Single_Write_IIC(0x2b, 0x03);
+  37   1         
+  38   1         /*- Set_PULSE -*/
+  39   1         // Enable X, Yand Z double pulse with DPA = 0, no double pulse abort.
+  40   1         Single_Write_IIC(0x21, 0x2a);
+  41   1         // Set Threshold 3g on X and Y, 5g on Z, 0.063g/LSB
+  42   1         // Set Threshold 1g on X, Y and Z, 0.063g/LSB, 1g/0.063 = 16 = 0x10.
+  43   1         Single_Write_IIC(0x23, 0x08);
+  44   1         Single_Write_IIC(0x24, 0x08);
+  45   1         Single_Write_IIC(0x25, 0x08);
+  46   1         // Set time limit for tap detection to 60ms LP mode.
+  47   1         Single_Write_IIC(0x26, 0x30);
+  48   1         // Set Latency time to 200ms
+  49   1         // Set Latency time to 100ms, 100ms/2.5 = 40 = 0x28
+  50   1         Single_Write_IIC(0x27, 0x28);
+  51   1         // Set time window for second tap to 300ms.
+  52   1         // Set time window for second tap to 500ms, 500ms/2.5 = 200 = 0xc8
+  53   1         Single_Write_IIC(0x28, 0xc8);
+  54   1      
+C51 COMPILER V9.54   SENSOR                                                                04/22/2016 14:54:25 PAGE 2   
+
+  55   1         /*- Set_FF_MT -*/
+  56   1         // ELE = 1, OAE = 1, enable X, Y, Z.
+  57   1         Single_Write_IIC(0x15, 0xe0);
+  58   1         // Threshold value is 1g for 0.063g/count, 1g/0.063 = 16 = 0x10.
+  59   1         // Threshold value is 1g for 0.063g/count, 0.5g/0.063 = 8 = 0x08.
+  60   1         Single_Write_IIC(0x17, 0x10);
+  61   1         // Debounce counter is 300ms with ODR 400Hz and LP mode, the value is 300ms/2.5ms = 120, 0x78.
+  62   1         // Debounce counter is 100ms with ODR 400Hz and LP mode, the value is 100ms/2.5ms = 40, 0x28.
+  63   1         Single_Write_IIC(0x18, 0x28);
+  64   1            
+  65   1         /*- Set_Transient -*/
+  66   1         // ELE = 1, enable X, Y, Z.
+  67   1         // ELE = 1, enable X, Y.
+  68   1         Single_Write_IIC(0x1d, 0x16);
+  69   1         // Threshold value is 1g for 0.063g/count, 0.5g/0.063 = 8 = 0x08.
+  70   1         Single_Write_IIC(0x1f, 0x01);
+  71   1         // Debounce counter is 50ms with ODR 400Hz and LP mode, the value is 50ms/2.5ms = 20, 0x14.
+  72   1         Single_Write_IIC(0x20, 0x28);
+  73   1         
+  74   1         /*- Set_PL -*/
+  75   1         // Set PL_EN, enable orientation detection
+  76   1         Single_Write_IIC(0x11, 0x40);
+  77   1         // Set back/front angle trip threshold to 11, Z < 65, 
+  78   1         // Set Z-lockout angle trip threshold to 111, 43 degree.
+  79   1         Single_Write_IIC(0x13, 0xc7);
+  80   1         // Set XY trip threshold angle to 0x07<<3, 15 degrees.
+  81   1         // Set hysteresis to 0x04, 14 degrees.
+  82   1         Single_Write_IIC(0x14, 0x3c);
+  83   1         // Set Debounce counter, 100ms/2.5 = 40, 0x28.
+  84   1         Single_Write_IIC(0x12, 0x28);
+  85   1         
+  86   1         /*- Set INT1 -*/
+  87   1         // Route INT1 to System interrupt.
+  88   1         Single_Write_IIC(0x2d, 0x3c);
+  89   1         Single_Write_IIC(0x2e, 0x3c);
+  90   1         
+  91   1         // Read the CTRL_REG1.
+  92   1         CTRL_REG1_data = Single_Read_IIC(0x2a);
+  93   1         CTRL_REG1_data |= 0x01;
+  94   1         // Set the sensor in active mode.
+  95   1         Single_Write_IIC(0x2a, CTRL_REG1_data);
+  96   1         }
+  97          
+  98          /*------------------------------------------------------------------*-
+  99            Set_FF_MT()
+ 100            Initialisation function for the switch library.
+ 101          void Set_FF_MT(void)
+ 102             {
+ 103             // Set the sensor in 100Hz ODR, Standby
+ 104             Single_Write_IIC(0x2a, 0x18); 
+ 105             // ELE = 1, OAE = 1, enable X, Y, disable Z.
+ 106             Single_Write_IIC(0x15, 0xd8);
+ 107             // Threshold value is 1g for 0.063g/count.
+ 108             Single_Write_IIC(0x17, 0x10);
+ 109             // Debounce counter is 300ms, the value is 300ms/10ms = 30, 0x1e.
+ 110             Single_Write_IIC(0x18, 0x0a);
+ 111             // Enable FF_MT interrupt function.
+ 112             Single_Write_IIC(0x2d, 0x04);
+ 113             // Route the FF_MT interrupt to INT1 hardware pin.
+ 114             Single_Write_IIC(0x2e, 0x04);
+ 115             // Read the CTRL_REG1.
+ 116             CTRL_REG1_data = Single_Read_IIC(0x2a);
+C51 COMPILER V9.54   SENSOR                                                                04/22/2016 14:54:25 PAGE 3   
+
+ 117             CTRL_REG1_data |= 0x01;
+ 118             // Set the sensor in active mode.
+ 119             Single_Write_IIC(0x2A, CTRL_REG1_data);  
+ 120             }
+ 121             
+ 122          -*------------------------------------------------------------------*/
+ 123          
+ 124          /*------------------------------------------------------------------*-
+ 125            ---- END OF FILE -------------------------------------------------
+ 126          -*------------------------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    164    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

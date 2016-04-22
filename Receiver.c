@@ -11,66 +11,68 @@
 #include "Main.h"
 #include "Port.h"
 
-#include "Selflearn.h"
-#include "Speech.h"
-#include "ISP_DataFlash.h"
-#include "UART.h"
 #include "Receiver.h"
+#include "Speech.h"
 
 // ------ Public variable definitions ------------------------------
 
 // ------ Public variable declarations -----------------------------
-extern bit Received_finished_G;
-extern tByte Received_cache[7];
-
-extern bit hSCH_sleep_EN;
+extern bit XB_open_flag;
 
 // ------ Private variables ----------------------------------------
+tByte RXD_power_EN_time;
 
 // ------ Private constants ----------------------------------------
-
 /*------------------------------------------------------------------*-
-  Selflearn_Init()
-  Initialisation function for the switch library.
+  Receiver_init()
+  Reset RXD power after 10s.
 -*------------------------------------------------------------------*/
-void Selflearn_Init(void)
-   {
-	// Set P0.3(Passwd_reed_switch_port) to input mode.
-	P2M1 |= 0x20;
-	P2M2 &= 0xdf;
+void Receiver_init(void)
+	{
+	RXD_power_EN_time = 0;
+	RXD_power_EN = 1;
+	RXD = 0;
 	}
 
-
 /*------------------------------------------------------------------*-
-  Self_learn_action()
-  Initialisation function for the switch library.
+  RXD_power_reset()
+  Reset RXD power after 10s.
 -*------------------------------------------------------------------*/
-void Self_learn_action(void)
+void RXD_power_reset(void)
 	{
-	if(!Passwd_reed_switch_port)
-		RXD_power_on();
-
-	if((!Passwd_reed_switch_port)&&(Received_finished_G))
+	if(RXD_power_EN == 0)
 		{
-		Goto_speech(Ticktack);
-		Self_learn_programming();
-		Received_finished_G = 0;
-		}
+		RXD_power_EN_time += 1;
+		if(RXD_power_EN_time > 9)
+			{
+			RXD_power_off();
+			
+			if(XB_open_flag)
+				XB_open_flag = 0;
+			}
+		}	
 	}
 
 /*------------------------------------------------------------------*-
-  Self_learn_programming()
-  Initialisation function for the switch library.
+  RXD_power_on()
+  Reset RXD power after 10s.
 -*------------------------------------------------------------------*/
-void Self_learn_programming(void)
+void RXD_power_on(void)
 	{
-	Flash_Page_Erase(0x3000);
-	Flash_Write_Data(0x3000, Received_cache[5]);
-	Flash_Write_Data(0x3001, Received_cache[4]);
-	Flash_Write_Data(0x3002, Received_cache[3]);
-	Flash_Write_Data(0x3003, Received_cache[2]);
-	Flash_Write_Data(0x3004, Received_cache[1]);
-	Flash_Write_Data(0x3005, Received_cache[0]);
+	RXD_power_EN_time = 0;
+	RXD_power_EN = 0;
+	RXD = 1;
+	}
+
+/*------------------------------------------------------------------*-
+  RXD_power_off()
+  Reset RXD power after 10s.
+-*------------------------------------------------------------------*/
+void RXD_power_off(void)
+	{
+	RXD_power_EN_time = 0;
+	RXD_power_EN = 1;
+	RXD = 0;
 	}
 
 /*------------------------------------------------------------------*-

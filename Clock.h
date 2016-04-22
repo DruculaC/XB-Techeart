@@ -13,7 +13,7 @@
 // ------ Public function prototypes -------------------------------
 void Clock_Init(void);
 void Clock_update(void);
-
+void System_change(void);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

@@ -20,27 +20,32 @@
 #include "Alarm.h"
 #include "Clock.h"
 #include "Battery.h"
+#include "Sensor.h"
+#include "Receiver.h"
 
 /* ............................................................... */
 
 void main(void)
    {	
+	// Initialization
 	Timer0_Init(500);
 	UART_Init(9600);
 	Button_Init();
 	Selflearn_Init();
 	Speech_Init();
-   IIC_Init();
+   Sensor_Init();
 	KBI_Init();
 	Alarm_Init();
 	Clock_Init();
+	Sensor_Init();
+	Receiver_init();
 	Battery_Init();
 	
-   // Add Tasks	
-	hSCH_Add_Task(Button_update, 1500, 200, 1);		// 100ms/ticket
-   hSCH_Add_Task(Speech_update, 1600, 1000, 1);		// 0.5s/ticket
-   hSCH_Add_Task(Alarm_update, 1700, 1000, 1);		// 0.5s/ticket
-	hSCH_Add_Task(Clock_update, 1800, 2000, 1);		// 1s/ticket
+   // Add Tasks
+	hSCH_Add_Task(Button_update, 1550, 200, 1);		// 100ms/ticket
+   hSCH_Add_Task(Speech_update, 1600, 200, 1);		// 100ms/ticket
+   hSCH_Add_Task(Alarm_update, 1720, 1000, 1);		// 0.5s/ticket
+	hSCH_Add_Task(Clock_update, 1880, 2000, 1);		// 1s/ticket
 	
 	// Start the program.
 	hSCH_Start();

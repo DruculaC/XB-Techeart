@@ -22,7 +22,7 @@ Dialog DLL:      TP51.DLL V2.58
  
 <h2>Project:</h2>
 D:\OneDrive\Project\GitHub\XB-Techeart\XB-Techeart.uvproj
-Project File Date:  03/31/2016
+Project File Date:  04/13/2016
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
@@ -41,14 +41,28 @@ compiling KBI.c...
 compiling Alarm.c...
 compiling Battery.c...
 compiling Clock.c...
+compiling Sensor.c...
+compiling Receiver.c...
 linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SENDDATA?UART
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_MULTIPLE_READ_IIC?IIC
-Program Size: data=114.2 xdata=0 code=2643
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SINGLE_READ_IIC?IIC
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?KBI_ISR?KBI
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_IIC_SENDBYTE?IIC
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?KBI_ISR?KBI
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?IIC_RECVBYTE?IIC
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?KBI_ISR?KBI
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?IIC_SENDACK?IIC
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?KBI_ISR?KBI
+Program Size: data=104.6 xdata=0 code=2879
 creating hex file from ".\Objects\XB-Techeart"...
-".\Objects\XB-Techeart" - 0 Error(s), 2 Warning(s).
+".\Objects\XB-Techeart" - 0 Error(s), 4 Warning(s).
 </pre>
 </body>
 </html>

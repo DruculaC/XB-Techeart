@@ -15,16 +15,17 @@
 #include "IIC.h"
 #include "Speech.h"
 #include "Timer.h"
+#include "Receiver.h"
 
 // ------ Public variable definitions ------------------------------
 
 // ------ Public variable declarations -----------------------------
 extern bit KBI_G;
+extern bit Alarm_G;
+extern tByte hSCH_sleep_EN_time;
 
 // ------ Private variables ----------------------------------------
-tByte Sensor_Int_SourceSystem;
-tByte Sensor_Int_SourceMFF;
-bit Alarm_G;
+
 // ------ Private constants ----------------------------------------
 
 
@@ -34,9 +35,6 @@ bit Alarm_G;
 -*------------------------------------------------------------------*/
 void Alarm_Init(void)
 	{
-	Sensor_Int_SourceSystem = 0;
-	Sensor_Int_SourceMFF = 0;	
-	Alarm_G = 0;
 	}
 
 /*------------------------------------------------------------------*-
@@ -46,10 +44,12 @@ void Alarm_Init(void)
 void Alarm_update(void)
 	{
 	Analyse_KBI();
-		
+
 	if(Alarm_G)
 		{
-		Goto_speech(Ticktack);
+		RXD_power_on();
+		Goto_speech(Siren);
+		hSCH_sleep_EN_time = 0;
 		}
 	}
 
@@ -61,26 +61,10 @@ void Analyse_KBI(void)
 	{
 	if(KBI_G)
 		{		
-		KBI_G = 0;
-		
-		Sensor_Int_SourceSystem = 0;
-		Sensor_Int_SourceMFF = 0;
-		
-		// Read INT_SOURCE register(0x0c), determine source of interrupt.
-		Sensor_Int_SourceSystem = Single_Read_IIC(0x0c);
-		// Set up case statement to service all possible interrupts.
-		if((Sensor_Int_SourceSystem &0x04) == 0x04)
-			{
-			// If it is MT_FF set the interrupt, read FF_MT_SRC register(0x16).
-			Sensor_Int_SourceMFF = Single_Read_IIC(0x16);
-			if((Sensor_Int_SourceMFF &0x80) == 0x80)
-				{				
-				Alarm_G = 1;
-				}
-			}
+		KBI_G = 0;	
 		}	
 	}
-
+	
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------
 -*------------------------------------------------------------------*/
