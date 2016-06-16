@@ -13,6 +13,7 @@
 // ------ Public function prototypes -------------------------------
 void Selflearn_Init(void);
 void Self_learn_action(void);
+void Self_learn_reset(void);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

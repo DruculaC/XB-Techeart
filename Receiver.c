@@ -31,7 +31,8 @@ void Receiver_init(void)
 	{
 	RXD_power_EN_time = 0;
 	RXD_power_EN = 1;
-	RXD = 0;
+	ID_module_EN = 0;
+//	RXD = 0;
 	}
 
 /*------------------------------------------------------------------*-
@@ -61,7 +62,9 @@ void RXD_power_on(void)
 	{
 	RXD_power_EN_time = 0;
 	RXD_power_EN = 0;
-	RXD = 1;
+	ID_module_EN = 1;
+//	Speech_reset();
+//	RXD = 1;
 	}
 
 /*------------------------------------------------------------------*-
@@ -72,7 +75,8 @@ void RXD_power_off(void)
 	{
 	RXD_power_EN_time = 0;
 	RXD_power_EN = 1;
-	RXD = 0;
+	ID_module_EN = 0;
+//	RXD = 0;
 	}
 
 /*------------------------------------------------------------------*-

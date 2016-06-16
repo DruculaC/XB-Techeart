@@ -16,6 +16,7 @@
 
 // ------ Public variable definitions ------------------------------
 bit Speech_blocked_G;	// Block other speech program.
+bit Speech_busy_G;		// 1 means speech busy already.
 
 // ------ Public variable declarations -----------------------------
 
@@ -37,12 +38,14 @@ void Speech_Init(void)
 	P0M2 &= 0x7f;
 
 	Speech_EN = 0;
-	Speech_RST = 1;
+	Speech_RST = 0;
 	Speech_data = 0;
 	Speech_time = 0;
 	Speech_time_thres = 10;
+	Speech_busy_G = 0;
 	
-	Goto_speech(No_voice);
+//	Goto_speech(No_voice);
+	Speech_reset();
 	}
 
 /*--------------------------------------------------
@@ -61,7 +64,6 @@ void Send_speech(tByte count_a, tByte time_b)
 		Speech_data = 0; 
 		Delay(LOOP_TIMEOUT_INIT_001ms);
 		}
-
 //	Speech_time_thres = time_b;
 	time_b = 0;
 	
@@ -93,9 +95,9 @@ void Speech_update(void)
 ------------------------------------------------------------------*/
 void Speech_reset(void)
 	{
-	Speech_RST = 0;
-	Delay(LOOP_TIMEOUT_INIT_050ms);
 	Speech_RST = 1;
+	Delay(LOOP_TIMEOUT_INIT_050ms);
+	Speech_RST = 0;
 	Delay(LOOP_TIMEOUT_INIT_050ms);
 	}
 
@@ -139,6 +141,8 @@ void Speech_broadcast(void)
 	{	
 	if((Speech_busy)&&(Speech_scenario != Tick))
 		{
+		Speech_busy_G = 1;
+		
 		Speech_time += 1;
 		if(Speech_time > 100)
 			{
@@ -151,7 +155,12 @@ void Speech_broadcast(void)
 		// If 4031C no busy signal, then reset enable.
 		Speech_time = 0;
 		Speech_EN = 0;
-		
+		if(Speech_busy_G)
+			{
+			Speech_busy_G = 0;
+			Speech_reset();
+			}
+			
 		switch(Speech_scenario)
 			{
 			case No_voice:

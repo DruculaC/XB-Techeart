@@ -18,12 +18,13 @@
 #include "Receiver.h"
 
 // ------ Public variable definitions ------------------------------
-
+tByte Passwd_reed_switch_time;
 // ------ Public variable declarations -----------------------------
 extern bit Received_finished_G;
 extern tByte Received_cache[7];
 
 extern bit hSCH_sleep_EN;
+extern bit Passwd_reed_switch_port;
 
 // ------ Private variables ----------------------------------------
 
@@ -36,8 +37,10 @@ extern bit hSCH_sleep_EN;
 void Selflearn_Init(void)
    {
 	// Set P0.3(Passwd_reed_switch_port) to input mode.
-	P2M1 |= 0x20;
-	P2M2 &= 0xdf;
+//	P2M1 |= 0x20;
+//	P2M2 &= 0xdf;
+	
+	Passwd_reed_switch_time = 0;
 	}
 
 
@@ -55,6 +58,26 @@ void Self_learn_action(void)
 		Goto_speech(Ticktack);
 		Self_learn_programming();
 		Received_finished_G = 0;
+		
+		// Close passwd matching.
+		Passwd_reed_switch_port = 1;
+		}
+	}
+
+/*------------------------------------------------------------------*-
+  Self_learn_reset()
+  Initialisation function for the switch library.
+-*------------------------------------------------------------------*/
+void Self_learn_reset(void)
+	{
+	if(!Passwd_reed_switch_port)
+		{
+		Passwd_reed_switch_time += 1;
+		if(Passwd_reed_switch_time > 10)
+			{
+			Passwd_reed_switch_time = 0;
+			Passwd_reed_switch_port = 1;
+			}
 		}
 	}
 

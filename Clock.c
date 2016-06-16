@@ -16,6 +16,7 @@
 #include "Battery.h"
 #include "Speech.h"
 #include "Receiver.h"
+#include "Selflearn.h"
 
 // ------ Public variable definitions ------------------------------
 extern bit Alarm_G;
@@ -61,7 +62,12 @@ void Clock_Init(void)
 void Clock_update(void)
 	{
 	Clock_second += 1;
-
+	
+	test_port = ~test_port;	
+	
+	// 10s after power on, close passwd match.
+	Self_learn_reset();
+	
 	if(Clock_second >= 60)
 		{
 		Clock_second = 0;
@@ -78,7 +84,7 @@ void Clock_update(void)
 	System_change();
 	
 	// Reset RXD power after a short time.
-	RXD_power_reset();
+//	RXD_power_reset();
 	
 	if(ID_disable_G)
 		{
@@ -92,7 +98,6 @@ void Clock_update(void)
 	
 	if(hSCH_sleep_EN)
 		{
-		test_port = ~test_port;
 		hSCH_sleep_EN_time += 1;
 		if(hSCH_sleep_EN_time > 10)
 			{
@@ -100,9 +105,12 @@ void Clock_update(void)
 			hSCH_sleep_EN = 0;
 			XB_open_flag = 0;
 			
-			Speech_RST = 0;
+			RXD_power_off();
+			
+//			Speech_RST = 0;
 			Speech_EN = 0;
-			hSCH_Go_To_Sleep();
+			
+//			hSCH_Go_To_Sleep();
 			}
 		}	
 	}

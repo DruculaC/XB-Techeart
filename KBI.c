@@ -135,7 +135,6 @@ void KBI_ISR(void) interrupt 7
 			Alarm_G = 1;
 			}	
 		}
-
 	
 	KBI_G = 1;
 	}

@@ -44,7 +44,8 @@ void Alarm_Init(void)
 void Alarm_update(void)
 	{
 	Analyse_KBI();
-
+	
+	
 	if(Alarm_G)
 		{
 		RXD_power_on();

@@ -95,9 +95,10 @@ void hSCH_Dispatch_Tasks(void)
       }
 
    // Report system status
-   hSCH_Report_Status();  
+	hSCH_Report_Status();  
 
-   // The scheduler enters idle mode at this point 
+   // The scheduler enters idle mode at this point
+	// hSCH_Go_To_Sleep();
    }
 
 /*------------------------------------------------------------------*-
@@ -307,7 +308,8 @@ void hSCH_Report_Status(void)
 -*------------------------------------------------------------------*/
 void hSCH_Go_To_Sleep()
    {
-   PCON |= 0x02;    // Enter idle mode (generic 8051 version)
+//	PCON |= 0x01;    // Enter idle mode (generic 8051 version)
+   PCON |= 0x02;    // Enter power down mode (generic 8051 version)
 
    // Entering idle mode requires TWO consecutive instructions 
    // on 80c515 / 80c505 - to avoid accidental triggering

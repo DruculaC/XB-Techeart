@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   CLOCK                                                                 04/22/2016 14:54:25 PAGE 1   
+C51 COMPILER V9.54   CLOCK                                                                 06/16/2016 11:58:38 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE CLOCK
@@ -26,133 +26,141 @@ line level    source
   16          #include "Battery.h"
   17          #include "Speech.h"
   18          #include "Receiver.h"
-  19          
-  20          // ------ Public variable definitions ------------------------------
-  21          extern bit Alarm_G;
-  22          extern bit ID_certificated_G;
-  23          extern bit System_EN_G;
-  24          extern tByte Speech_time;
-  25          extern bit XB_open_flag;
-  26          extern bit ID_disable_G;
-  27          
+  19          #include "Selflearn.h"
+  20          
+  21          // ------ Public variable definitions ------------------------------
+  22          extern bit Alarm_G;
+  23          extern bit ID_certificated_G;
+  24          extern bit System_EN_G;
+  25          extern tByte Speech_time;
+  26          extern bit XB_open_flag;
+  27          extern bit ID_disable_G;
   28          
-  29          // ------ Public variable declarations -----------------------------
-  30          bit hSCH_sleep_EN;
-  31          tByte hSCH_sleep_EN_time;
-  32          tByte ID_disable_time;
-  33          
-  34          // ------ Private variables ----------------------------------------
-  35          tByte Clock_second;
-  36          tByte Clock_minute;
-  37          
-  38          // ------ Private constants ----------------------------------------
-  39          
-  40          /*------------------------------------------------------------------*-
-  41            Clock_Init()
-  42            Initialisation function for the switch library.
-  43          -*------------------------------------------------------------------*/
-  44          void Clock_Init(void)
-  45             {
-  46   1         Clock_second = 0;
-  47   1         Clock_minute = 0;
-  48   1         
-  49   1         hSCH_sleep_EN = 1;
-  50   1         hSCH_sleep_EN_time = 0;
-  51   1         
-  52   1         ID_disable_G = 0;
-  53   1         ID_disable_time = 0;
-  54   1         }
-C51 COMPILER V9.54   CLOCK                                                                 04/22/2016 14:54:25 PAGE 2   
+  29          
+  30          // ------ Public variable declarations -----------------------------
+  31          bit hSCH_sleep_EN;
+  32          tByte hSCH_sleep_EN_time;
+  33          tByte ID_disable_time;
+  34          
+  35          // ------ Private variables ----------------------------------------
+  36          tByte Clock_second;
+  37          tByte Clock_minute;
+  38          
+  39          // ------ Private constants ----------------------------------------
+  40          
+  41          /*------------------------------------------------------------------*-
+  42            Clock_Init()
+  43            Initialisation function for the switch library.
+  44          -*------------------------------------------------------------------*/
+  45          void Clock_Init(void)
+  46             {
+  47   1         Clock_second = 0;
+  48   1         Clock_minute = 0;
+  49   1         
+  50   1         hSCH_sleep_EN = 1;
+  51   1         hSCH_sleep_EN_time = 0;
+  52   1         
+  53   1         ID_disable_G = 0;
+  54   1         ID_disable_time = 0;
+C51 COMPILER V9.54   CLOCK                                                                 06/16/2016 11:58:38 PAGE 2   
 
-  55          
-  56          /*------------------------------------------------------------------*-
-  57            Clock_update()
-  58            Initialisation function for the switch library.
-  59            1s/ticket.
-  60          -*------------------------------------------------------------------*/
-  61          void Clock_update(void)
-  62             {
-  63   1         Clock_second += 1;
-  64   1      
-  65   1         if(Clock_second >= 60)
-  66   1            {
-  67   2            Clock_second = 0;
-  68   2            Clock_minute += 1;
-  69   2            if(Clock_minute >= 60)
-  70   2               {
-  71   3               Clock_minute = 0;
-  72   3               }
-  73   2            
-  74   2            // Detect battery every minute.
-  75   2            Battery_detection();          
-  76   2            }
-  77   1         // Change system status.
-  78   1         System_change();
-  79   1         
-  80   1         // Reset RXD power after a short time.
-  81   1         RXD_power_reset();
-  82   1         
-  83   1         if(ID_disable_G)
-  84   1            {
-  85   2            ID_disable_time += 1;
-  86   2            if(ID_disable_time > 3)
-  87   2               {
-  88   3               ID_disable_time = 0;
-  89   3               ID_disable_G = 0;
-  90   3               }
-  91   2            }
-  92   1         
-  93   1         if(hSCH_sleep_EN)
-  94   1            {
-  95   2            test_port = ~test_port;
-  96   2            hSCH_sleep_EN_time += 1;
-  97   2            if(hSCH_sleep_EN_time > 10)
-  98   2               {
-  99   3               hSCH_sleep_EN_time = 0;
- 100   3               hSCH_sleep_EN = 0;
- 101   3               XB_open_flag = 0;
- 102   3               
- 103   3               Speech_RST = 0;
- 104   3               Speech_EN = 0;
- 105   3               hSCH_Go_To_Sleep();
- 106   3               }
- 107   2            }  
- 108   1         }
- 109          
- 110          /*------------------------------------------------------------------*-
- 111            System_change()
- 112            Initialisation function for the switch library.
- 113            1s/ticket.
- 114          -*------------------------------------------------------------------*/
- 115          void System_change(void)
- 116             {
-C51 COMPILER V9.54   CLOCK                                                                 04/22/2016 14:54:25 PAGE 3   
+  55   1         }
+  56          
+  57          /*------------------------------------------------------------------*-
+  58            Clock_update()
+  59            Initialisation function for the switch library.
+  60            1s/ticket.
+  61          -*------------------------------------------------------------------*/
+  62          void Clock_update(void)
+  63             {
+  64   1         Clock_second += 1;
+  65   1         
+  66   1         test_port = ~test_port; 
+  67   1         
+  68   1         // 10s after power on, close passwd match.
+  69   1         Self_learn_reset();
+  70   1         
+  71   1         if(Clock_second >= 60)
+  72   1            {
+  73   2            Clock_second = 0;
+  74   2            Clock_minute += 1;
+  75   2            if(Clock_minute >= 60)
+  76   2               {
+  77   3               Clock_minute = 0;
+  78   3               }
+  79   2            
+  80   2            // Detect battery every minute.
+  81   2            Battery_detection();          
+  82   2            }
+  83   1         // Change system status.
+  84   1         System_change();
+  85   1         
+  86   1         // Reset RXD power after a short time.
+  87   1      // RXD_power_reset();
+  88   1         
+  89   1         if(ID_disable_G)
+  90   1            {
+  91   2            ID_disable_time += 1;
+  92   2            if(ID_disable_time > 3)
+  93   2               {
+  94   3               ID_disable_time = 0;
+  95   3               ID_disable_G = 0;
+  96   3               }
+  97   2            }
+  98   1         
+  99   1         if(hSCH_sleep_EN)
+ 100   1            {
+ 101   2            hSCH_sleep_EN_time += 1;
+ 102   2            if(hSCH_sleep_EN_time > 10)
+ 103   2               {
+ 104   3               hSCH_sleep_EN_time = 0;
+ 105   3               hSCH_sleep_EN = 0;
+ 106   3               XB_open_flag = 0;
+ 107   3               
+ 108   3               RXD_power_off();
+ 109   3               
+ 110   3      //       Speech_RST = 0;
+ 111   3               Speech_EN = 0;
+ 112   3               
+ 113   3      //       hSCH_Go_To_Sleep();
+ 114   3               }
+ 115   2            }  
+ 116   1         }
+C51 COMPILER V9.54   CLOCK                                                                 06/16/2016 11:58:38 PAGE 3   
 
- 117   1         if(ID_certificated_G)
- 118   1            {
- 119   2            ID_certificated_G = 0;
- 120   2            System_EN_G = ~System_EN_G;
- 121   2            // If system is enabled, deploy the vibration sensor and ultrasonic sensor.
- 122   2            if(System_EN_G == 1)
- 123   2               {
- 124   3               Goto_speech(System_open);
- 125   3               XB_open_flag = 0;
- 126   3               }
- 127   2            else
- 128   2               {
- 129   3               Goto_speech(System_closed);      
- 130   3               XB_open_flag = 0;
- 131   3               }
- 132   2            }
- 133   1         }
- 134          
- 135          /*------------------------------------------------------------------*-
- 136            ---- END OF FILE -------------------------------------------------
- 137          -*------------------------------------------------------------------*/
+ 117          
+ 118          /*------------------------------------------------------------------*-
+ 119            System_change()
+ 120            Initialisation function for the switch library.
+ 121            1s/ticket.
+ 122          -*------------------------------------------------------------------*/
+ 123          void System_change(void)
+ 124             {
+ 125   1         if(ID_certificated_G)
+ 126   1            {
+ 127   2            ID_certificated_G = 0;
+ 128   2            System_EN_G = ~System_EN_G;
+ 129   2            // If system is enabled, deploy the vibration sensor and ultrasonic sensor.
+ 130   2            if(System_EN_G == 1)
+ 131   2               {
+ 132   3               Goto_speech(System_open);
+ 133   3               XB_open_flag = 0;
+ 134   3               }
+ 135   2            else
+ 136   2               {
+ 137   3               Goto_speech(System_closed);      
+ 138   3               XB_open_flag = 0;
+ 139   3               }
+ 140   2            }
+ 141   1         }
+ 142          
+ 143          /*------------------------------------------------------------------*-
+ 144            ---- END OF FILE -------------------------------------------------
+ 145          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    114    ----
+   CODE SIZE        =    112    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

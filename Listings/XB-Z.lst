@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   XB_Z                                                                  04/22/2016 14:54:23 PAGE 1   
+C51 COMPILER V9.54   XB_Z                                                                  06/16/2016 11:58:36 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE XB_Z
@@ -57,20 +57,25 @@ line level    source
   47   1         hSCH_Add_Task(Alarm_update, 1720, 1000, 1);     // 0.5s/ticket
   48   1         hSCH_Add_Task(Clock_update, 1880, 2000, 1);     // 1s/ticket
   49   1         
-  50   1         // Start the program.
-  51   1         hSCH_Start();
-  52   1         
-  53   1         while(1)
-  54   1            {
-C51 COMPILER V9.54   XB_Z                                                                  04/22/2016 14:54:23 PAGE 2   
+  50   1      // hSCH_Add_Task(Button_update, 1550, 925, 1);     // 100ms/ticket
+  51   1      // hSCH_Add_Task(Speech_update, 1600, 925, 1);     // 100ms/ticket
+  52   1      //  hSCH_Add_Task(Alarm_update, 1720, 4625, 1);    // 0.5s/ticket
+  53   1      // hSCH_Add_Task(Clock_update, 1880, 9250, 1);     // 1s/ticket
+  54   1         
+C51 COMPILER V9.54   XB_Z                                                                  06/16/2016 11:58:36 PAGE 2   
 
-  55   2            // Excute the program.
-  56   2            hSCH_Dispatch_Tasks();
-  57   2            }
-  58   1         }
-  59          /*------------------------------------------------------------------*-
-  60            ---- END OF FILE ---------------------------------------------------
-  61          -*------------------------------------------------------------------*/
+  55   1         // Start the program.
+  56   1         hSCH_Start();
+  57   1         
+  58   1         while(1)
+  59   1            {
+  60   2            // Excute the program.
+  61   2            hSCH_Dispatch_Tasks();
+  62   2            }
+  63   1         }
+  64          /*------------------------------------------------------------------*-
+  65            ---- END OF FILE ---------------------------------------------------
+  66          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

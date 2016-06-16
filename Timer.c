@@ -25,7 +25,7 @@ tByte timer0_8H, timer0_8L, timer1_8H, timer1_8L;
 	Timer0_Init()
 	Initializate Timer0.
 -----------------------------------------------------------------*/
-void Timer0_Init(const tWord Tick_us_T0)
+void Timer0_Init(tWord Tick_us_T0)
 	{
 	tLong Inc_T0;
 	tWord timer0_16;
@@ -109,10 +109,9 @@ void hSCH_Manual_Timer0_Reload()
 void SCH_Update(void) interrupt interrupt_timer_0_overflow 
    {
    tByte Index;
-   // Reload the Timer0 value
+   // Reload the Timer0 value manually.
    hSCH_Manual_Timer0_Reload();
-	
-	
+
    // NOTE: calculations are in *TICKS* (not milliseconds)
    for (Index = 0; Index < hSCH_MAX_TASKS; Index++)
       {

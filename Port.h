@@ -23,7 +23,7 @@
 sbit XB_reed_switch_port = P0^1;	// P0.1, PIN26, reed switch in XB, 0 for XB closed, 1 for XB open.
 
 // ------ UART.c Selflearn.c ---------------------------------------
-sbit Passwd_reed_switch_port = P2^5;	// P2.5, PIN16, reed switch in board,  
+//sbit Passwd_reed_switch_port = P2^5;	// P2.5, PIN16, reed switch in board,  
 													// 0 for open passwd matching, 1 for shut down matching.
 // ------ Speech.c -------------------------------------------------
 sbit Speech_RST = P2^0;		// P2.0, PIN1, reset 4031C
@@ -47,6 +47,9 @@ sbit Speech_busy = P0^7;	// P0.7, PIN19, 4031C Flag for speeching busy, 1 for sp
 
 // ------ Receiver.c ----------------------------------------------
 sbit RXD_power_EN = P0^5;	// P0.5, PIN22, Enable pin for RXD and ID receiver.
+
+sbit ID_module_EN = P0^1;	// P0^1, PIN26, 
+
 
 sbit test_port = P2^4;		// P2.4, PIN15
 

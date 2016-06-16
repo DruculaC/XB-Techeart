@@ -19,6 +19,7 @@
 
 // oscillator / resonator frequency (in Hz)
 #define OSC_FREQ (11059200UL)
+//#define OSC_FREQ (22118400UL)
 
 // number of oscillations per instruction (12, etc)
 // 12 - original 8051/8052 and numerous modern versions
@@ -29,22 +30,11 @@
 
 // baud rate defined
 #define BAUD9600 (9600)
-#define BAUD1200 (1200)
 
 // typedefs
 typedef unsigned char tByte;
 typedef unsigned int tWord;
 typedef unsigned long tLong;
-
-// Program version
-// Define customer, such as Taili, Shengbaolong, Wangpai, Tailing, General
-// #define General
-
-// Define PCB board, such as Z2, Z3.
-// #define Z2
-
-// Define salve model, F2, F3.
-// #define F3
 
 // Define model.
 // ID, WX, 

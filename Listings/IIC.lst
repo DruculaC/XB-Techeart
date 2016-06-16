@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   IIC                                                                   04/22/2016 14:54:24 PAGE 1   
+C51 COMPILER V9.54   IIC                                                                   06/16/2016 11:58:37 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE IIC
@@ -62,7 +62,7 @@ line level    source
   52          tByte Single_Read_IIC(tByte REG_Address)
   53             {  
   54   1         tByte REG_data;
-C51 COMPILER V9.54   IIC                                                                   04/22/2016 14:54:24 PAGE 2   
+C51 COMPILER V9.54   IIC                                                                   06/16/2016 11:58:37 PAGE 2   
 
   55   1         IIC_Start();                          //起始信号
   56   1         IIC_SendByte(SlaveAddress);           //发送设备地址+写信号
@@ -126,7 +126,7 @@ line level    source
  114            IIC_RecvByte()
  115            Program for IIC receive a byte.
  116          -*------------------------------------------------------------------*/
-C51 COMPILER V9.54   IIC                                                                   04/22/2016 14:54:24 PAGE 3   
+C51 COMPILER V9.54   IIC                                                                   06/16/2016 11:58:37 PAGE 3   
 
  117          tByte IIC_RecvByte()
  118             {
@@ -190,7 +190,7 @@ line level    source
  176            IIC_RecvACK()
  177            Program for IIC receive ACK signal.
  178          -*------------------------------------------------------------------*/
-C51 COMPILER V9.54   IIC                                                                   04/22/2016 14:54:24 PAGE 4   
+C51 COMPILER V9.54   IIC                                                                   06/16/2016 11:58:37 PAGE 4   
 
  179          bit IIC_RecvACK()
  180             {

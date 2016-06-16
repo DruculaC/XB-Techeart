@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   HSCH51                                                                04/22/2016 14:54:23 PAGE 1   
+C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE HSCH51
@@ -62,7 +62,7 @@ line level    source
   52          // ------ Private function prototypes ------------------------------
   53          
   54          
-C51 COMPILER V9.54   HSCH51                                                                04/22/2016 14:54:23 PAGE 2   
+C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 2   
 
   55          // ------ Private variables ----------------------------------------
   56          
@@ -109,166 +109,167 @@ line level    source
   97   1         // Report system status
   98   1         hSCH_Report_Status();  
   99   1      
- 100   1         // The scheduler enters idle mode at this point 
- 101   1         }
- 102          
- 103          /*------------------------------------------------------------------*-
- 104          
- 105            hSCH_Add_Task()
- 106          
- 107            Causes a task (function) to be executed at regular intervals 
- 108            or after a user-defined delay
- 109          
- 110            Fn_P  - The name of the function which is to be scheduled.
- 111                    NOTE: All scheduled functions must be 'void, void' -
- 112                    that is, they must take no parameters, and have 
- 113                    a void return type. 
- 114                             
- 115            Del   - The interval (TICKS) before the task is first executed
- 116          
-C51 COMPILER V9.54   HSCH51                                                                04/22/2016 14:54:23 PAGE 3   
+ 100   1         // The scheduler enters idle mode at this point
+ 101   1         // hSCH_Go_To_Sleep();
+ 102   1         }
+ 103          
+ 104          /*------------------------------------------------------------------*-
+ 105          
+ 106            hSCH_Add_Task()
+ 107          
+ 108            Causes a task (function) to be executed at regular intervals 
+ 109            or after a user-defined delay
+ 110          
+ 111            Fn_P  - The name of the function which is to be scheduled.
+ 112                    NOTE: All scheduled functions must be 'void, void' -
+ 113                    that is, they must take no parameters, and have 
+ 114                    a void return type. 
+ 115                             
+ 116            Del   - The interval (TICKS) before the task is first executed
+C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 3   
 
- 117            Rep   - If 'Rep' is 0, the function is only called once,
- 118                    at the time determined by 'Del'.  If Rep is non-zero,
- 119                    then the function is called repeatedly at an interval
- 120                    determined by the vakue of Rep (see below for examples
- 121                    that should help clarify this).
- 122          
- 123            Co-op - Set to 1 if it a co-op task; 0 if pre-emptive
- 124          
- 125            RETN:   The position in the task array at which the task has been added.
- 126                    If the return value is hSCH_MAX_TASKS then the task could not be
- 127                    added to the array (there was insufficient space).  If the
- 128                    return value is < hSCH_MAX_TASKS, then the task was added 
- 129                    successfully.  
- 130          
- 131                    Note: this return value may be required, if a task is
- 132                    to be subsequently deleted - see hSCH_Delete_Task().
- 133          
+ 117          
+ 118            Rep   - If 'Rep' is 0, the function is only called once,
+ 119                    at the time determined by 'Del'.  If Rep is non-zero,
+ 120                    then the function is called repeatedly at an interval
+ 121                    determined by the vakue of Rep (see below for examples
+ 122                    that should help clarify this).
+ 123          
+ 124            Co-op - Set to 1 if it a co-op task; 0 if pre-emptive
+ 125          
+ 126            RETN:   The position in the task array at which the task has been added.
+ 127                    If the return value is hSCH_MAX_TASKS then the task could not be
+ 128                    added to the array (there was insufficient space).  If the
+ 129                    return value is < hSCH_MAX_TASKS, then the task was added 
+ 130                    successfully.  
+ 131          
+ 132                    Note: this return value may be required, if a task is
+ 133                    to be subsequently deleted - see hSCH_Delete_Task().
  134          
- 135            EXAMPLES:
- 136          
- 137            Task_ID = hSCH_Add_Task(Do_X,1000,0,0);
- 138            Causes the function Do_X() to be executed once after 1000 ticks.
- 139            (Pre-emptive task)          
- 140          
- 141            Task_ID = hSCH_Add_Task(Do_X,0,1000,1);
- 142            Causes the function Do_X() to be executed regularly, every 1000 ticks.            
- 143            (co-operative task)          
- 144          
- 145            Task_ID = hSCH_Add_Task(Do_X,300,1000,0);
- 146            Causes the function Do_X() to be executed regularly, every 1000 ticks.
- 147            Task will be first executed at T = 300 ticks, then 1300, 2300, etc.            
- 148            (Pre-emptive task)          
- 149           
- 150          -*------------------------------------------------------------------*/
- 151          tByte hSCH_Add_Task(void (code* Fn_p)(), // Task function pointer
- 152                             tWord   Del,    // Num ticks 'til task first runs 
- 153                             tWord   Per,    // Num ticks between repeat runs
- 154                             bit     Co_op)  // Co_op / pre_emp
- 155             {
- 156   1         tByte Index = 0;
- 157   1         
- 158   1         // First find a gap in the array (if there is one)
- 159   1         while ((hSCH_tasks_G[Index].pTask != 0) && (Index < hSCH_MAX_TASKS))
- 160   1            {
- 161   2            Index++;
- 162   2            } 
- 163   1         
- 164   1         // Have we reached the end of the list?   
- 165   1         if (Index == hSCH_MAX_TASKS)
- 166   1            {
- 167   2            // Task list is full
- 168   2            //
- 169   2            // Set the global error variable
- 170   2            Error_code_G = ERROR_SCH_TOO_MANY_TASKS;
- 171   2      
- 172   2            // Also return an error code
- 173   2            return hSCH_MAX_TASKS;  
- 174   2            }
- 175   1            
- 176   1         // If we're here, there is a space in the task array
- 177   1         hSCH_tasks_G[Index].pTask = Fn_p;
- 178   1           
-C51 COMPILER V9.54   HSCH51                                                                04/22/2016 14:54:23 PAGE 4   
+ 135          
+ 136            EXAMPLES:
+ 137          
+ 138            Task_ID = hSCH_Add_Task(Do_X,1000,0,0);
+ 139            Causes the function Do_X() to be executed once after 1000 ticks.
+ 140            (Pre-emptive task)          
+ 141          
+ 142            Task_ID = hSCH_Add_Task(Do_X,0,1000,1);
+ 143            Causes the function Do_X() to be executed regularly, every 1000 ticks.            
+ 144            (co-operative task)          
+ 145          
+ 146            Task_ID = hSCH_Add_Task(Do_X,300,1000,0);
+ 147            Causes the function Do_X() to be executed regularly, every 1000 ticks.
+ 148            Task will be first executed at T = 300 ticks, then 1300, 2300, etc.            
+ 149            (Pre-emptive task)          
+ 150           
+ 151          -*------------------------------------------------------------------*/
+ 152          tByte hSCH_Add_Task(void (code* Fn_p)(), // Task function pointer
+ 153                             tWord   Del,    // Num ticks 'til task first runs 
+ 154                             tWord   Per,    // Num ticks between repeat runs
+ 155                             bit     Co_op)  // Co_op / pre_emp
+ 156             {
+ 157   1         tByte Index = 0;
+ 158   1         
+ 159   1         // First find a gap in the array (if there is one)
+ 160   1         while ((hSCH_tasks_G[Index].pTask != 0) && (Index < hSCH_MAX_TASKS))
+ 161   1            {
+ 162   2            Index++;
+ 163   2            } 
+ 164   1         
+ 165   1         // Have we reached the end of the list?   
+ 166   1         if (Index == hSCH_MAX_TASKS)
+ 167   1            {
+ 168   2            // Task list is full
+ 169   2            //
+ 170   2            // Set the global error variable
+ 171   2            Error_code_G = ERROR_SCH_TOO_MANY_TASKS;
+ 172   2      
+ 173   2            // Also return an error code
+ 174   2            return hSCH_MAX_TASKS;  
+ 175   2            }
+ 176   1            
+ 177   1         // If we're here, there is a space in the task array
+ 178   1         hSCH_tasks_G[Index].pTask = Fn_p;
+C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 4   
 
- 179   1         hSCH_tasks_G[Index].Delay  = Del;
- 180   1         hSCH_tasks_G[Index].Period = Per;
- 181   1      
- 182   1         hSCH_tasks_G[Index].Co_op = Co_op;
- 183   1      
- 184   1         hSCH_tasks_G[Index].RunMe  = 0;
- 185   1      
- 186   1         return Index; // return position of task (to allow later deletion)
- 187   1         }
- 188          
- 189          /*------------------------------------------------------------------*-
- 190          
- 191            hSCH_Delete_Task()
- 192          
- 193            Removes a task from the scheduler.  Note that this does
- 194            *not* delete the associated function from memory: 
- 195            it simply means that it is no longer called by the scheduler. 
- 196          
- 197            PARAMS:   Task_index - The task index.  Provided by hSCH_Add_Task(). 
- 198          
- 199            RETURNS:  RETURN_ERROR or RETURN_NORMAL
- 200          
- 201          -*------------------------------------------------------------------*/
- 202          bit hSCH_Delete_Task(tByte Task_index) 
- 203             {
- 204   1         bit Return_code;
- 205   1      
- 206   1         if (hSCH_tasks_G[Task_index].pTask == 0)
- 207   1            {
- 208   2            // No task at this location...
- 209   2            //
- 210   2            // Set the global error variable
- 211   2            Error_code_G = ERROR_SCH_CANNOT_DELETE_TASK;
- 212   2      
- 213   2            // ...also return an error code
- 214   2            Return_code = RETURN_ERROR;
- 215   2            }
- 216   1         else
- 217   1            {
- 218   2            Return_code = RETURN_NORMAL;
- 219   2            }      
- 220   1         
- 221   1         hSCH_tasks_G[Task_index].pTask   = 0;
- 222   1         hSCH_tasks_G[Task_index].Delay   = 0;
- 223   1         hSCH_tasks_G[Task_index].Period  = 0;
- 224   1      
- 225   1         hSCH_tasks_G[Task_index].RunMe   = 0;
- 226   1      
- 227   1         return Return_code;       // return status
- 228   1         }
- 229          
+ 179   1           
+ 180   1         hSCH_tasks_G[Index].Delay  = Del;
+ 181   1         hSCH_tasks_G[Index].Period = Per;
+ 182   1      
+ 183   1         hSCH_tasks_G[Index].Co_op = Co_op;
+ 184   1      
+ 185   1         hSCH_tasks_G[Index].RunMe  = 0;
+ 186   1      
+ 187   1         return Index; // return position of task (to allow later deletion)
+ 188   1         }
+ 189          
+ 190          /*------------------------------------------------------------------*-
+ 191          
+ 192            hSCH_Delete_Task()
+ 193          
+ 194            Removes a task from the scheduler.  Note that this does
+ 195            *not* delete the associated function from memory: 
+ 196            it simply means that it is no longer called by the scheduler. 
+ 197          
+ 198            PARAMS:   Task_index - The task index.  Provided by hSCH_Add_Task(). 
+ 199          
+ 200            RETURNS:  RETURN_ERROR or RETURN_NORMAL
+ 201          
+ 202          -*------------------------------------------------------------------*/
+ 203          bit hSCH_Delete_Task(tByte Task_index) 
+ 204             {
+ 205   1         bit Return_code;
+ 206   1      
+ 207   1         if (hSCH_tasks_G[Task_index].pTask == 0)
+ 208   1            {
+ 209   2            // No task at this location...
+ 210   2            //
+ 211   2            // Set the global error variable
+ 212   2            Error_code_G = ERROR_SCH_CANNOT_DELETE_TASK;
+ 213   2      
+ 214   2            // ...also return an error code
+ 215   2            Return_code = RETURN_ERROR;
+ 216   2            }
+ 217   1         else
+ 218   1            {
+ 219   2            Return_code = RETURN_NORMAL;
+ 220   2            }      
+ 221   1         
+ 222   1         hSCH_tasks_G[Task_index].pTask   = 0;
+ 223   1         hSCH_tasks_G[Task_index].Delay   = 0;
+ 224   1         hSCH_tasks_G[Task_index].Period  = 0;
+ 225   1      
+ 226   1         hSCH_tasks_G[Task_index].RunMe   = 0;
+ 227   1      
+ 228   1         return Return_code;       // return status
+ 229   1         }
  230          
- 231          /*------------------------------------------------------------------*-
- 232          
- 233            hSCH_Report_Status()
- 234          
- 235            Simple function to display error codes.
- 236          
- 237            This version displays code on a port with attached LEDs:
- 238            adapt, if required, to report errors over serial link, etc.
- 239          
- 240            Errors are only displayed for a limited period 
-C51 COMPILER V9.54   HSCH51                                                                04/22/2016 14:54:23 PAGE 5   
+ 231          
+ 232          /*------------------------------------------------------------------*-
+ 233          
+ 234            hSCH_Report_Status()
+ 235          
+ 236            Simple function to display error codes.
+ 237          
+ 238            This version displays code on a port with attached LEDs:
+ 239            adapt, if required, to report errors over serial link, etc.
+ 240          
+C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 5   
 
- 241            (60000 ticks = 1 minute at 1ms tick interval).
- 242            After this the the error code is reset to 0. 
- 243          
- 244            This code may be easily adapted to display the last
- 245            error 'for ever': this may be appropriate in your
- 246            application.
- 247          
- 248            See Chapter 14 for further information.
- 249           
- 250          -*------------------------------------------------------------------*/
- 251          void hSCH_Report_Status(void)
- 252             {
- 253   1      #ifdef SCH_REPORT_ERRORS
+ 241            Errors are only displayed for a limited period 
+ 242            (60000 ticks = 1 minute at 1ms tick interval).
+ 243            After this the the error code is reset to 0. 
+ 244          
+ 245            This code may be easily adapted to display the last
+ 246            error 'for ever': this may be appropriate in your
+ 247            application.
+ 248          
+ 249            See Chapter 14 for further information.
+ 250           
+ 251          -*------------------------------------------------------------------*/
+ 252          void hSCH_Report_Status(void)
+ 253             {
+ 254   1      #ifdef SCH_REPORT_ERRORS
                  // ONLY APPLIES IF WE ARE REPORTING ERRORS
                  // Check for a new error code
                  if (Error_code_G != Last_error_code_G)
@@ -298,47 +299,48 @@ line level    source
                        }
                     }
               #endif
- 283   1         }
- 284          
+ 284   1         }
  285          
- 286          /*------------------------------------------------------------------*-
- 287          
- 288            hSCH_Go_To_Sleep()
- 289          
- 290            This scheduler enters 'idle mode' between clock ticks
- 291            to save power.  The next clock tick will return the processor
- 292            to the normal operating state.
- 293          
- 294            Note: a slight performance improvement is possible if this
- 295            function is implemented as a macro, or if the code here is simply 
- 296            pasted into the 'dispatch' function.  
- 297          
- 298            However, by making this a function call, it becomes easier 
- 299            - during development - to assess the performance of the 
- 300            scheduler, using the 'performance analyser' in the Keil 
- 301            hardware simulator. See Chapter 14 for examples for this. 
- 302          
-C51 COMPILER V9.54   HSCH51                                                                04/22/2016 14:54:23 PAGE 6   
+ 286          
+ 287          /*------------------------------------------------------------------*-
+ 288          
+ 289            hSCH_Go_To_Sleep()
+ 290          
+ 291            This scheduler enters 'idle mode' between clock ticks
+ 292            to save power.  The next clock tick will return the processor
+ 293            to the normal operating state.
+ 294          
+ 295            Note: a slight performance improvement is possible if this
+ 296            function is implemented as a macro, or if the code here is simply 
+ 297            pasted into the 'dispatch' function.  
+ 298          
+ 299            However, by making this a function call, it becomes easier 
+ 300            - during development - to assess the performance of the 
+ 301            scheduler, using the 'performance analyser' in the Keil 
+ 302            hardware simulator. See Chapter 14 for examples for this. 
+C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 6   
 
- 303            *** May wish to disable this if using a watchdog ***
- 304          
- 305            *** ADAPT AS REQUIRED FOR YOUR HARDWARE ***
- 306          
- 307          -*------------------------------------------------------------------*/
- 308          void hSCH_Go_To_Sleep()
- 309             {
- 310   1         PCON |= 0x02;    // Enter idle mode (generic 8051 version)
- 311   1      
- 312   1         // Entering idle mode requires TWO consecutive instructions 
- 313   1         // on 80c515 / 80c505 - to avoid accidental triggering
- 314   1         //PCON |= 0x01;    // Enter idle mode (#1)
- 315   1         //PCON |= 0x20;    // Enter idle mode (#2)
- 316   1         }
- 317          
- 318          
- 319          /*------------------------------------------------------------------*-
- 320            ---- END OF FILE -------------------------------------------------
- 321          -*------------------------------------------------------------------*/
+ 303          
+ 304            *** May wish to disable this if using a watchdog ***
+ 305          
+ 306            *** ADAPT AS REQUIRED FOR YOUR HARDWARE ***
+ 307          
+ 308          -*------------------------------------------------------------------*/
+ 309          void hSCH_Go_To_Sleep()
+ 310             {
+ 311   1      // PCON |= 0x01;    // Enter idle mode (generic 8051 version)
+ 312   1         PCON |= 0x02;    // Enter power down mode (generic 8051 version)
+ 313   1      
+ 314   1         // Entering idle mode requires TWO consecutive instructions 
+ 315   1         // on 80c515 / 80c505 - to avoid accidental triggering
+ 316   1         //PCON |= 0x01;    // Enter idle mode (#1)
+ 317   1         //PCON |= 0x20;    // Enter idle mode (#2)
+ 318   1         }
+ 319          
+ 320          
+ 321          /*------------------------------------------------------------------*-
+ 322            ---- END OF FILE -------------------------------------------------
+ 323          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

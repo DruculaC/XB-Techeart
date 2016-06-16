@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   SELFLEARN                                                             04/22/2016 14:54:24 PAGE 1   
+C51 COMPILER V9.54   SELFLEARN                                                             06/16/2016 11:58:37 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE SELFLEARN
@@ -28,74 +28,97 @@ line level    source
   18          #include "Receiver.h"
   19          
   20          // ------ Public variable definitions ------------------------------
-  21          
+  21          tByte Passwd_reed_switch_time;
   22          // ------ Public variable declarations -----------------------------
   23          extern bit Received_finished_G;
   24          extern tByte Received_cache[7];
   25          
   26          extern bit hSCH_sleep_EN;
-  27          
-  28          // ------ Private variables ----------------------------------------
-  29          
-  30          // ------ Private constants ----------------------------------------
-  31          
-  32          /*------------------------------------------------------------------*-
-  33            Selflearn_Init()
-  34            Initialisation function for the switch library.
-  35          -*------------------------------------------------------------------*/
-  36          void Selflearn_Init(void)
-  37             {
-  38   1         // Set P0.3(Passwd_reed_switch_port) to input mode.
-  39   1         P2M1 |= 0x20;
-  40   1         P2M2 &= 0xdf;
-  41   1         }
-  42          
-  43          
-  44          /*------------------------------------------------------------------*-
-  45            Self_learn_action()
-  46            Initialisation function for the switch library.
-  47          -*------------------------------------------------------------------*/
-  48          void Self_learn_action(void)
-  49             {
-  50   1         if(!Passwd_reed_switch_port)
-  51   1            RXD_power_on();
-  52   1      
-  53   1         if((!Passwd_reed_switch_port)&&(Received_finished_G))
-  54   1            {
-C51 COMPILER V9.54   SELFLEARN                                                             04/22/2016 14:54:24 PAGE 2   
+  27          extern bit Passwd_reed_switch_port;
+  28          
+  29          // ------ Private variables ----------------------------------------
+  30          
+  31          // ------ Private constants ----------------------------------------
+  32          
+  33          /*------------------------------------------------------------------*-
+  34            Selflearn_Init()
+  35            Initialisation function for the switch library.
+  36          -*------------------------------------------------------------------*/
+  37          void Selflearn_Init(void)
+  38             {
+  39   1         // Set P0.3(Passwd_reed_switch_port) to input mode.
+  40   1      // P2M1 |= 0x20;
+  41   1      // P2M2 &= 0xdf;
+  42   1         
+  43   1         Passwd_reed_switch_time = 0;
+  44   1         }
+  45          
+  46          
+  47          /*------------------------------------------------------------------*-
+  48            Self_learn_action()
+  49            Initialisation function for the switch library.
+  50          -*------------------------------------------------------------------*/
+  51          void Self_learn_action(void)
+  52             {
+  53   1         if(!Passwd_reed_switch_port)
+  54   1            RXD_power_on();
+C51 COMPILER V9.54   SELFLEARN                                                             06/16/2016 11:58:37 PAGE 2   
 
-  55   2            Goto_speech(Ticktack);
-  56   2            Self_learn_programming();
-  57   2            Received_finished_G = 0;
-  58   2            }
-  59   1         }
-  60          
-  61          /*------------------------------------------------------------------*-
-  62            Self_learn_programming()
-  63            Initialisation function for the switch library.
-  64          -*------------------------------------------------------------------*/
-  65          void Self_learn_programming(void)
-  66             {
-  67   1         Flash_Page_Erase(0x3000);
-  68   1         Flash_Write_Data(0x3000, Received_cache[5]);
-  69   1         Flash_Write_Data(0x3001, Received_cache[4]);
-  70   1         Flash_Write_Data(0x3002, Received_cache[3]);
-  71   1         Flash_Write_Data(0x3003, Received_cache[2]);
-  72   1         Flash_Write_Data(0x3004, Received_cache[1]);
-  73   1         Flash_Write_Data(0x3005, Received_cache[0]);
-  74   1         }
-  75          
-  76          /*------------------------------------------------------------------*-
-  77            ---- END OF FILE -------------------------------------------------
-  78          -*------------------------------------------------------------------*/
+  55   1      
+  56   1         if((!Passwd_reed_switch_port)&&(Received_finished_G))
+  57   1            {
+  58   2            Goto_speech(Ticktack);
+  59   2            Self_learn_programming();
+  60   2            Received_finished_G = 0;
+  61   2            
+  62   2            // Close passwd matching.
+  63   2            Passwd_reed_switch_port = 1;
+  64   2            }
+  65   1         }
+  66          
+  67          /*------------------------------------------------------------------*-
+  68            Self_learn_reset()
+  69            Initialisation function for the switch library.
+  70          -*------------------------------------------------------------------*/
+  71          void Self_learn_reset(void)
+  72             {
+  73   1         if(!Passwd_reed_switch_port)
+  74   1            {
+  75   2            Passwd_reed_switch_time += 1;
+  76   2            if(Passwd_reed_switch_time > 10)
+  77   2               {
+  78   3               Passwd_reed_switch_time = 0;
+  79   3               Passwd_reed_switch_port = 1;
+  80   3               }
+  81   2            }
+  82   1         }
+  83          
+  84          /*------------------------------------------------------------------*-
+  85            Self_learn_programming()
+  86            Initialisation function for the switch library.
+  87          -*------------------------------------------------------------------*/
+  88          void Self_learn_programming(void)
+  89             {
+  90   1         Flash_Page_Erase(0x3000);
+  91   1         Flash_Write_Data(0x3000, Received_cache[5]);
+  92   1         Flash_Write_Data(0x3001, Received_cache[4]);
+  93   1         Flash_Write_Data(0x3002, Received_cache[3]);
+  94   1         Flash_Write_Data(0x3003, Received_cache[2]);
+  95   1         Flash_Write_Data(0x3004, Received_cache[1]);
+  96   1         Flash_Write_Data(0x3005, Received_cache[0]);
+  97   1         }
+  98          
+  99          /*------------------------------------------------------------------*-
+ 100            ---- END OF FILE -------------------------------------------------
+ 101          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     91    ----
+   CODE SIZE        =    108    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =      1    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

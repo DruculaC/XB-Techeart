@@ -21,6 +21,8 @@ extern bit Alarm_G;
 // ------ Public variable declarations -----------------------------
 bit System_EN_G;		// Flag for system enabled, 0 for not enabled, 1 for enabled.
 bit XB_open_flag;
+bit Passwd_reed_switch_port;	// Passwd match.
+										// 0 for open passwd matching, 1 for shut down matching.
 // ------ Private variables ----------------------------------------
 tByte XB_reed_HVtime;
 tByte XB_reed_level;
@@ -34,14 +36,15 @@ tByte XB_reed_level;
 -*------------------------------------------------------------------*/
 void Button_Init(void)
    {
-	// Set P0.4(XB_reed_switch_port) to input mode.
-	P0M1 |= 0x02;
-	P0M2 &= 0xfd;
+	// Set P0.1(XB_reed_switch_port) to input mode.
+//	P0M1 |= 0x02;
+//	P0M2 &= 0xfd;
 	
 	XB_reed_HVtime = 0;
 	XB_reed_level = 0;
 	System_EN_G = 0;
 	XB_open_flag = 0;
+	Passwd_reed_switch_port = 0;
 	}
 
 /*------------------------------------------------------------------*-
@@ -50,8 +53,7 @@ void Button_Init(void)
 -*------------------------------------------------------------------*/
 void Button_update(void)
    {
-	XB_reed_detection();
-	
+//	XB_reed_detection();
 	Self_learn_action();
 	}
 

@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   SENSOR                                                                04/22/2016 14:54:25 PAGE 1   
+C51 COMPILER V9.54   SENSOR                                                                06/16/2016 11:58:38 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE SENSOR
@@ -62,7 +62,7 @@ line level    source
   52   1         // Set time window for second tap to 500ms, 500ms/2.5 = 200 = 0xc8
   53   1         Single_Write_IIC(0x28, 0xc8);
   54   1      
-C51 COMPILER V9.54   SENSOR                                                                04/22/2016 14:54:25 PAGE 2   
+C51 COMPILER V9.54   SENSOR                                                                06/16/2016 11:58:38 PAGE 2   
 
   55   1         /*- Set_FF_MT -*/
   56   1         // ELE = 1, OAE = 1, enable X, Y, Z.
@@ -126,7 +126,7 @@ line level    source
  114             Single_Write_IIC(0x2e, 0x04);
  115             // Read the CTRL_REG1.
  116             CTRL_REG1_data = Single_Read_IIC(0x2a);
-C51 COMPILER V9.54   SENSOR                                                                04/22/2016 14:54:25 PAGE 3   
+C51 COMPILER V9.54   SENSOR                                                                06/16/2016 11:58:38 PAGE 3   
 
  117             CTRL_REG1_data |= 0x01;
  118             // Set the sensor in active mode.

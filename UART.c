@@ -28,7 +28,6 @@ code tByte IDkey3 _at_ 0x003003;
 code tByte IDkey4 _at_ 0x003004;
 code tByte IDkey5 _at_ 0x003005;
 
-
 // ------ Public variable declarations -----------------------------
 extern tByte Speech_time;
 extern tByte ID_certificated_time;
@@ -36,6 +35,7 @@ extern bit Alarm_G;
 extern bit System_EN_G;
 extern bit XB_open_flag;
 extern tByte hSCH_sleep_EN_time;
+extern bit Passwd_reed_switch_port;
 
 // ------ Private variables ----------------------------------------
 tByte Received_cache[7];		// Cache of receiving bytes.
@@ -120,11 +120,8 @@ void uart_isr() interrupt 4
 				{
 				Received_count = 0;
 				
-				// Set receiving finished.
+				// Set receiving finished flag.
 				Received_finished_G = 1;
-				// clear speech time for tick voice, broadcast tich speech in 100ms.
-				//Speech_time = 0;
-				//Goto_speech(Tick);
 				}
 			}
 		else
@@ -136,23 +133,27 @@ void uart_isr() interrupt 4
 					
 					if((ID_disable_G == 0)||(Alarm_G))
 						{						
-						// clear speech time for tick voice, broadcast tich speech in 100ms.
+						// Clear speech time for tick voice, broadcast tich speech in 100ms.
 						Speech_time = 0;
 						Goto_speech(Tick);
+						// Reset power down count time.
 						hSCH_sleep_EN_time = 0;
 						
+						// If there is a alarm, don't change system status.
 						if(Alarm_G)
 							{
 							Alarm_G = 0;
 							ID_disable_G = 1;
 							
-							if(XB_reed_switch_port)
-								{
-								XB_open_flag = 1;
-								}
+							// If XB is open, set the flag to prevent alarm again.
+//							if(XB_reed_switch_port)
+//								{
+//								XB_open_flag = 1;
+//								}
 							}
 						else
 							{
+							// 
 							if(Passwd_reed_switch_port)
 								ID_certificated_G = 1;						
 							}
