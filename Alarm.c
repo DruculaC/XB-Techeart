@@ -25,6 +25,7 @@ extern bit Alarm_G;
 extern tByte hSCH_sleep_EN_time;
 
 // ------ Private variables ----------------------------------------
+tByte Alarm_speech_level;
 
 // ------ Private constants ----------------------------------------
 
@@ -35,6 +36,7 @@ extern tByte hSCH_sleep_EN_time;
 -*------------------------------------------------------------------*/
 void Alarm_Init(void)
 	{
+	Alarm_speech_level = 0;
 	}
 
 /*------------------------------------------------------------------*-
@@ -45,11 +47,27 @@ void Alarm_update(void)
 	{
 	Analyse_KBI();
 	
-	
 	if(Alarm_G)
 		{
 		RXD_power_on();
-		Goto_speech(Siren);
+		if(Speech_EN == 0)
+			{
+			switch(Alarm_speech_level)
+				{
+				case 0:
+					{
+					Alarm_speech_level = 1;
+					Goto_speech(Catch_thief);
+					}
+				break;
+				case 1:
+					{
+					Alarm_speech_level = 0;
+					Goto_speech(Siren);
+					}
+				break;
+				}			
+			}
 		hSCH_sleep_EN_time = 0;
 		}
 	}

@@ -9,8 +9,8 @@
 // ------ Public data type declarations ----------------------------
 
 // ------ Public constants -----------------------------------------
-#define	SlaveAddress 0x38 // Slave address for MMA8451.
-//#define	SlaveAddress 0x1c 		// Slave address for MMA8451.
+//#define	SlaveAddress 0x3a 			// Slave address for MMA8451, SA0 = 1.
+#define	SlaveAddress 0x38					// Slave address for MMA8451, SA0 = 0;
 
 
 // ------ Public function prototypes -------------------------------
@@ -24,7 +24,7 @@ void IIC_Start();
 void IIC_Stop();
 void IIC_SendACK(bit ack);
 bit IIC_RecvACK();
-
+void IIC_Init(void);
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

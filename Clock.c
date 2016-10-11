@@ -63,12 +63,10 @@ void Clock_update(void)
 	{
 	Clock_second += 1;
 	
-	test_port = ~test_port;	
-	
 	// 10s after power on, close passwd match.
 	Self_learn_reset();
 	
-	if(Clock_second >= 60)
+	if(Clock_second >= 40)
 		{
 		Clock_second = 0;
 		Clock_minute += 1;
@@ -110,7 +108,7 @@ void Clock_update(void)
 //			Speech_RST = 0;
 			Speech_EN = 0;
 			
-//			hSCH_Go_To_Sleep();
+			hSCH_Go_To_Sleep();
 			}
 		}	
 	}

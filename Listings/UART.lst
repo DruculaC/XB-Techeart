@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   UART                                                                  06/16/2016 11:58:36 PAGE 1   
+C51 COMPILER V9.54   UART                                                                  08/17/2016 14:42:40 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE UART
@@ -62,7 +62,7 @@ line level    source
   52             {
   53   1         // Set PCON.6 SMOD0 = 0, 
   54   1         PCON &= 0xbf;
-C51 COMPILER V9.54   UART                                                                  06/16/2016 11:58:36 PAGE 2   
+C51 COMPILER V9.54   UART                                                                  08/17/2016 14:42:40 PAGE 2   
 
   55   1         
   56   1         // Set P1.0 and P1.1 as UART port.
@@ -126,7 +126,7 @@ line level    source
  114   2      
  115   2            // If in Self learning mode, receive 6 bytes.
  116   2            if(!Passwd_reed_switch_port)
-C51 COMPILER V9.54   UART                                                                  06/16/2016 11:58:36 PAGE 3   
+C51 COMPILER V9.54   UART                                                                  08/17/2016 14:42:40 PAGE 3   
 
  117   2               {
  118   3               Received_count += 1;
@@ -190,7 +190,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    PDATA SIZE       =   ----    ----
    DATA SIZE        =     10    ----
    IDATA SIZE       =   ----    ----
-C51 COMPILER V9.54   UART                                                                  06/16/2016 11:58:36 PAGE 4   
+C51 COMPILER V9.54   UART                                                                  08/17/2016 14:42:40 PAGE 4   
 
    BIT SIZE         =      5    ----
 END OF MODULE INFORMATION.

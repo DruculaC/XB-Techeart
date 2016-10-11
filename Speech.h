@@ -54,7 +54,11 @@ void Speech_s_update(void);
 #define Kaiqi_brand (33)
 #define Kangjing_brand (34)
 #define Xiangniu_brand (35)
-
+#define Lvyuan_brand (36)
+#define Yunjian_brand (37)
+#define Wuxingzuanbao_brand (38)
+#define Battery_insufficient (39)
+#define Catch_thief (40)
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------
 -*------------------------------------------------------------------*/

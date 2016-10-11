@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 1   
+C51 COMPILER V9.54   HSCH51                                                                08/17/2016 14:42:40 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE HSCH51
@@ -62,7 +62,7 @@ line level    source
   52          // ------ Private function prototypes ------------------------------
   53          
   54          
-C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 2   
+C51 COMPILER V9.54   HSCH51                                                                08/17/2016 14:42:40 PAGE 2   
 
   55          // ------ Private variables ----------------------------------------
   56          
@@ -126,7 +126,7 @@ line level    source
  114                    a void return type. 
  115                             
  116            Del   - The interval (TICKS) before the task is first executed
-C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 3   
+C51 COMPILER V9.54   HSCH51                                                                08/17/2016 14:42:40 PAGE 3   
 
  117          
  118            Rep   - If 'Rep' is 0, the function is only called once,
@@ -190,7 +190,7 @@ line level    source
  176   1            
  177   1         // If we're here, there is a space in the task array
  178   1         hSCH_tasks_G[Index].pTask = Fn_p;
-C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 4   
+C51 COMPILER V9.54   HSCH51                                                                08/17/2016 14:42:40 PAGE 4   
 
  179   1           
  180   1         hSCH_tasks_G[Index].Delay  = Del;
@@ -254,7 +254,7 @@ line level    source
  238            This version displays code on a port with attached LEDs:
  239            adapt, if required, to report errors over serial link, etc.
  240          
-C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 5   
+C51 COMPILER V9.54   HSCH51                                                                08/17/2016 14:42:40 PAGE 5   
 
  241            Errors are only displayed for a limited period 
  242            (60000 ticks = 1 minute at 1ms tick interval).
@@ -318,7 +318,7 @@ line level    source
  300            - during development - to assess the performance of the 
  301            scheduler, using the 'performance analyser' in the Keil 
  302            hardware simulator. See Chapter 14 for examples for this. 
-C51 COMPILER V9.54   HSCH51                                                                06/16/2016 11:58:36 PAGE 6   
+C51 COMPILER V9.54   HSCH51                                                                08/17/2016 14:42:40 PAGE 6   
 
  303          
  304            *** May wish to disable this if using a watchdog ***

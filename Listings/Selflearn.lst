@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   SELFLEARN                                                             06/16/2016 11:58:37 PAGE 1   
+C51 COMPILER V9.54   SELFLEARN                                                             08/17/2016 14:42:40 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE SELFLEARN
@@ -62,7 +62,7 @@ line level    source
   52             {
   53   1         if(!Passwd_reed_switch_port)
   54   1            RXD_power_on();
-C51 COMPILER V9.54   SELFLEARN                                                             06/16/2016 11:58:37 PAGE 2   
+C51 COMPILER V9.54   SELFLEARN                                                             08/17/2016 14:42:40 PAGE 2   
 
   55   1      
   56   1         if((!Passwd_reed_switch_port)&&(Received_finished_G))

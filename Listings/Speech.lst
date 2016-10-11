@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   SPEECH                                                                06/16/2016 11:58:37 PAGE 1   
+C51 COMPILER V9.54   SPEECH                                                                08/17/2016 14:42:40 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE SPEECH
@@ -56,319 +56,351 @@ line level    source
   46   1         
   47   1      // Goto_speech(No_voice);
   48   1         Speech_reset();
-  49   1         }
-  50          
-  51          /*--------------------------------------------------
-  52             Send_speech()
-  53          ---------------------------------------------------*/
-  54          void Send_speech(tByte count_a, tByte time_b)
-C51 COMPILER V9.54   SPEECH                                                                06/16/2016 11:58:37 PAGE 2   
+  49   1      
+  50   1         Speech_time = 0;
+  51   1         Goto_speech(Tick);
+  52   1         }
+  53          
+  54          /*--------------------------------------------------
+C51 COMPILER V9.54   SPEECH                                                                08/17/2016 14:42:40 PAGE 2   
 
-  55             {
-  56   1         tByte i;
-  57   1         Speech_EN = 1;
-  58   1         Delay(LOOP_TIMEOUT_INIT_500ms);
-  59   1         Speech_reset();
-  60   1         for(i=0; i < count_a; i++)
-  61   1            {
-  62   2            Speech_data = 1; 
-  63   2            Delay(LOOP_TIMEOUT_INIT_001ms);
-  64   2            Speech_data = 0; 
-  65   2            Delay(LOOP_TIMEOUT_INIT_001ms);
-  66   2            }
-  67   1      // Speech_time_thres = time_b;
-  68   1         time_b = 0;
-  69   1         
-  70   1         Speech_scenario = 0;
-  71   1         }
-  72          
-  73          /*----------------------------------------------------------------
-  74             Goto_speech()
-  75             Update the speech function for every 1s
-  76          ------------------------------------------------------------------*/
-  77          void Goto_speech(tByte count_b)
-  78             {
-  79   1         Speech_scenario = count_b;
-  80   1         }
-  81          
-  82          /*----------------------------------------------------------------
-  83             Speech_update()
-  84             Update the speech function, 1s/ticket.
-  85          ------------------------------------------------------------------*/
-  86          void Speech_update(void)
-  87             {
-  88   1      // Speech_s_update();
-  89   1         Speech_broadcast();
-  90   1         }
-  91             
-  92          /*----------------------------------------------------------------
-  93             Speech_reset()
-  94             Send speech reset signal.
-  95          ------------------------------------------------------------------*/
-  96          void Speech_reset(void)
-  97             {
-  98   1         Speech_RST = 1;
-  99   1         Delay(LOOP_TIMEOUT_INIT_050ms);
- 100   1         Speech_RST = 0;
- 101   1         Delay(LOOP_TIMEOUT_INIT_050ms);
- 102   1         }
- 103          
- 104          /*----------------------------------------------------------------
- 105             Speech_s_update_s()
- 106             Instant speech update, 1ms/ticket, for now, only "Tich" voice.
- 107          void Speech_s_update(void)
- 108             {
- 109             if(Speech_scenario == Tick)
- 110                {
- 111                if(Speech_busy)
- 112                   {
- 113                   Speech_time += 1;
- 114                   if(Speech_time > 100)
- 115                      {
- 116                      Speech_time = 0;
-C51 COMPILER V9.54   SPEECH                                                                06/16/2016 11:58:37 PAGE 3   
+  55             Send_speech()
+  56          ---------------------------------------------------*/
+  57          void Send_speech(tByte count_a, tByte time_b)
+  58             {
+  59   1         tByte i;
+  60   1         Speech_EN = 1;
+  61   1         Delay(LOOP_TIMEOUT_INIT_500ms);
+  62   1         Speech_reset();
+  63   1         for(i=0; i < count_a; i++)
+  64   1            {
+  65   2            Speech_data = 1; 
+  66   2            Delay(LOOP_TIMEOUT_INIT_001ms);
+  67   2            Speech_data = 0; 
+  68   2            Delay(LOOP_TIMEOUT_INIT_001ms);
+  69   2            }
+  70   1         Speech_time_thres = time_b;
+  71   1      // time_b = 0;
+  72   1         
+  73   1         Speech_scenario = 0;
+  74   1         }
+  75          
+  76          /*----------------------------------------------------------------
+  77             Goto_speech()
+  78             Update the speech function for every 1s
+  79          ------------------------------------------------------------------*/
+  80          void Goto_speech(tByte count_b)
+  81             {
+  82   1         Speech_scenario = count_b;
+  83   1         }
+  84          
+  85          /*----------------------------------------------------------------
+  86             Speech_update()
+  87             Update the speech function, 1s/ticket.
+  88          ------------------------------------------------------------------*/
+  89          void Speech_update(void)
+  90             {
+  91   1      // Speech_s_update();
+  92   1         Speech_broadcast();
+  93   1         }
+  94             
+  95          /*----------------------------------------------------------------
+  96             Speech_reset()
+  97             Send speech reset signal.
+  98          ------------------------------------------------------------------*/
+  99          void Speech_reset(void)
+ 100             {
+ 101   1         Speech_RST = 1;
+ 102   1         Delay(LOOP_TIMEOUT_INIT_050ms);
+ 103   1         Speech_RST = 0;
+ 104   1         Delay(LOOP_TIMEOUT_INIT_050ms);
+ 105   1         }
+ 106          
+ 107          /*----------------------------------------------------------------
+ 108             Speech_s_update_s()
+ 109             Instant speech update, 1ms/ticket, for now, only "Tich" voice.
+ 110          void Speech_s_update(void)
+ 111             {
+ 112             if(Speech_scenario == Tick)
+ 113                {
+ 114                if(Speech_busy)
+ 115                   {
+ 116                   Speech_time += 1;
+C51 COMPILER V9.54   SPEECH                                                                08/17/2016 14:42:40 PAGE 3   
 
- 117                      Speech_EN = 0;
- 118                      Speech_scenario = 0;
- 119                      }
- 120                   }
- 121                else
- 122                   {
- 123                   switch(Speech_scenario)
- 124                      {
- 125                      case Tick:
- 126                         {
- 127                         Send_speech(Tick, 10);
- 128                         }
- 129                      break;      
- 130                      }     
- 131                   }     
- 132                }
- 133             }
- 134          ------------------------------------------------------------------*/
- 135          
- 136          /*----------------------------------------------------------------
- 137             Speech_broadcast()
- 138             broadcast the various speech.
- 139          ------------------------------------------------------------------*/
- 140          void Speech_broadcast(void)
- 141             {  
- 142   1         if((Speech_busy)&&(Speech_scenario != Tick))
- 143   1            {
- 144   2            Speech_busy_G = 1;
- 145   2            
- 146   2            Speech_time += 1;
- 147   2            if(Speech_time > 100)
- 148   2               {
- 149   3               Speech_time = 0;
- 150   3               Speech_EN = 0;
- 151   3               }
- 152   2            }
- 153   1         else
- 154   1            {     
- 155   2            // If 4031C no busy signal, then reset enable.
- 156   2            Speech_time = 0;
- 157   2            Speech_EN = 0;
- 158   2            if(Speech_busy_G)
- 159   2               {
- 160   3               Speech_busy_G = 0;
- 161   3               Speech_reset();
- 162   3               }
- 163   2               
- 164   2            switch(Speech_scenario)
- 165   2               {
- 166   3               case No_voice:
- 167   3                  {
- 168   4                  Send_speech(No_voice, 5);
- 169   4                  }
- 170   3               break;
- 171   3               case First_touch:
+ 117                   if(Speech_time > 100)
+ 118                      {
+ 119                      Speech_time = 0;
+ 120                      Speech_EN = 0;
+ 121                      Speech_scenario = 0;
+ 122                      }
+ 123                   }
+ 124                else
+ 125                   {
+ 126                   switch(Speech_scenario)
+ 127                      {
+ 128                      case Tick:
+ 129                         {
+ 130                         Send_speech(Tick, 10);
+ 131                         }
+ 132                      break;      
+ 133                      }     
+ 134                   }     
+ 135                }
+ 136             }
+ 137          ------------------------------------------------------------------*/
+ 138          
+ 139          /*----------------------------------------------------------------
+ 140             Speech_broadcast()
+ 141             broadcast the various speech.
+ 142          ------------------------------------------------------------------*/
+ 143          void Speech_broadcast(void)
+ 144             {  
+ 145   1      // if((Speech_busy)&&(Speech_scenario != Tick))
+ 146   1         if((Speech_EN)&&(Speech_scenario != Tick))
+ 147   1            {
+ 148   2            Speech_busy_G = 1;
+ 149   2            
+ 150   2            Speech_time += 1;
+ 151   2      //    if(Speech_time > 100)
+ 152   2            if(Speech_time > Speech_time_thres)
+ 153   2               {
+ 154   3               Speech_time = 0;
+ 155   3               Speech_EN = 0;
+ 156   3               }
+ 157   2            }
+ 158   1         else
+ 159   1            {     
+ 160   2            // If 4031C no busy signal, then reset enable.
+ 161   2            Speech_time = 0;
+ 162   2            Speech_EN = 0;
+ 163   2            if(Speech_busy_G)
+ 164   2               {
+ 165   3               Speech_busy_G = 0;
+ 166   3               Speech_reset();
+ 167   3               }
+ 168   2               
+ 169   2            switch(Speech_scenario)
+ 170   2               {
+ 171   3               case No_voice:
  172   3                  {
- 173   4                  Send_speech(First_touch, 15);
+ 173   4                  Send_speech(No_voice, 5);
  174   4                  }
  175   3               break;
- 176   3               case Stolen_motor:
+ 176   3               case First_touch:
  177   3                  {
- 178   4                  Send_speech(Stolen_motor, 45);
-C51 COMPILER V9.54   SPEECH                                                                06/16/2016 11:58:37 PAGE 4   
+ 178   4                  Send_speech(First_touch, 15);
+C51 COMPILER V9.54   SPEECH                                                                08/17/2016 14:42:40 PAGE 4   
 
  179   4                  }
  180   3               break;
- 181   3               case Appreciate_life:
+ 181   3               case Stolen_motor:
  182   3                  {
- 183   4                  Send_speech(Appreciate_life, 25);
+ 183   4                  Send_speech(Stolen_motor, 45);
  184   4                  }
  185   3               break;
- 186   3               case Shengbaolong_brand:
+ 186   3               case Appreciate_life:
  187   3                  {
- 188   4                  Send_speech(Shengbaolong_brand, 10);
+ 188   4                  Send_speech(Appreciate_life, 25);
  189   4                  }
  190   3               break;
- 191   3               case Reminder:
+ 191   3               case Shengbaolong_brand:
  192   3                  {
- 193   4                  Send_speech(Reminder, 10);
+ 193   4                  Send_speech(Shengbaolong_brand, 10);
  194   4                  }
  195   3               break;
- 196   3               case Siren:
+ 196   3               case Reminder:
  197   3                  {
- 198   4                  Send_speech(Siren, 5);
+ 198   4                  Send_speech(Reminder, 10);
  199   4                  }
  200   3               break;
- 201   3               case Battery_can_hold:
+ 201   3               case Siren:
  202   3                  {
- 203   4                  Send_speech(Battery_can_hold, 20);
+ 203   4                  Send_speech(Siren, 20);
  204   4                  }
  205   3               break;
- 206   3               case Open_lock:
+ 206   3               case Battery_can_hold:
  207   3                  {
- 208   4                  Send_speech(Open_lock, 10);
+ 208   4                  Send_speech(Battery_can_hold, 20);
  209   4                  }
  210   3               break;
- 211   3               case Close_lock:
+ 211   3               case Open_lock:
  212   3                  {
- 213   4                  Send_speech(Close_lock, 15);
+ 213   4                  Send_speech(Open_lock, 10);
  214   4                  }
  215   3               break;
- 216   3               case Kilometer:
+ 216   3               case Close_lock:
  217   3                  {
- 218   4                  Send_speech(Kilometer, 5);
+ 218   4                  Send_speech(Close_lock, 15);
  219   4                  }
  220   3               break;
- 221   3               case One:
+ 221   3               case Kilometer:
  222   3                  {
- 223   4                  Send_speech(One, 5);
+ 223   4                  Send_speech(Kilometer, 5);
  224   4                  }
  225   3               break;
- 226   3               case Two:
+ 226   3               case One:
  227   3                  {
- 228   4                  Send_speech(Two, 5);
+ 228   4                  Send_speech(One, 5);
  229   4                  }
  230   3               break;
- 231   3               case Three:
+ 231   3               case Two:
  232   3                  {
- 233   4                  Send_speech(Three, 5);
+ 233   4                  Send_speech(Two, 5);
  234   4                  }
  235   3               break;
- 236   3               case Four:
+ 236   3               case Three:
  237   3                  {
- 238   4                  Send_speech(Four, 5);
+ 238   4                  Send_speech(Three, 5);
  239   4                  }
  240   3               break;
-C51 COMPILER V9.54   SPEECH                                                                06/16/2016 11:58:37 PAGE 5   
+C51 COMPILER V9.54   SPEECH                                                                08/17/2016 14:42:40 PAGE 5   
 
- 241   3               case Five:
+ 241   3               case Four:
  242   3                  {
- 243   4                  Send_speech(Five, 5);
+ 243   4                  Send_speech(Four, 5);
  244   4                  }
  245   3               break;
- 246   3               case Six:
+ 246   3               case Five:
  247   3                  {
- 248   4                  Send_speech(Six, 5);
+ 248   4                  Send_speech(Five, 5);
  249   4                  }
  250   3               break;
- 251   3               case Seven:
+ 251   3               case Six:
  252   3                  {
- 253   4                  Send_speech(Seven, 5);
+ 253   4                  Send_speech(Six, 5);
  254   4                  }
  255   3               break;
- 256   3               case Eight:
+ 256   3               case Seven:
  257   3                  {
- 258   4                  Send_speech(Eight, 5);
+ 258   4                  Send_speech(Seven, 5);
  259   4                  }
  260   3               break;
- 261   3               case Nine:
+ 261   3               case Eight:
  262   3                  {
- 263   4                  Send_speech(Nine, 5);
+ 263   4                  Send_speech(Eight, 5);
  264   4                  }
  265   3               break;
- 266   3               case Ten:
+ 266   3               case Nine:
  267   3                  {
- 268   4                  Send_speech(Ten, 5);
+ 268   4                  Send_speech(Nine, 5);
  269   4                  }
  270   3               break;
- 271   3               case Second_touch:
+ 271   3               case Ten:
  272   3                  {
- 273   4                  Send_speech(Second_touch, 35);
+ 273   4                  Send_speech(Ten, 5);
  274   4                  }
  275   3               break;
- 276   3               case System_closed:
+ 276   3               case Second_touch:
  277   3                  {
- 278   4                  Send_speech(System_closed, 20);
+ 278   4                  Send_speech(Second_touch, 35);
  279   4                  }
  280   3               break;
- 281   3               case Tailing_brand:
+ 281   3               case System_closed:
  282   3                  {
- 283   4                  Send_speech(Tailing_brand, 5);
+ 283   4                  Send_speech(System_closed, 20);
  284   4                  }
  285   3               break;
- 286   3               case Xinri_brand:
+ 286   3               case Tailing_brand:
  287   3                  {
- 288   4                  Send_speech(Xinri_brand, 5);
+ 288   4                  Send_speech(Tailing_brand, 5);
  289   4                  }
  290   3               break;
- 291   3               case Tick:
+ 291   3               case Xinri_brand:
  292   3                  {
- 293   4                  Send_speech(Tick, 10);
+ 293   4                  Send_speech(Xinri_brand, 5);
  294   4                  }
- 295   3               break;         
- 296   3               case Ticktack:
+ 295   3               break;
+ 296   3               case Tick:
  297   3                  {
- 298   4                  Send_speech(Ticktack, 15);
+ 298   4                  Send_speech(Tick, 10);
  299   4                  }
- 300   3               break;      
- 301   3               case Aima_brand:
+ 300   3               break;         
+ 301   3               case Ticktack:
  302   3                  {
-C51 COMPILER V9.54   SPEECH                                                                06/16/2016 11:58:37 PAGE 6   
+C51 COMPILER V9.54   SPEECH                                                                08/17/2016 14:42:40 PAGE 6   
 
- 303   4                  Send_speech(Aima_brand, 10);
+ 303   4                  Send_speech(Ticktack, 18);
  304   4                  }
- 305   3               break;
- 306   3               case System_open:
+ 305   3               break;      
+ 306   3               case Aima_brand:
  307   3                  {
- 308   4                  Send_speech(System_open, 20);
+ 308   4                  Send_speech(Aima_brand, 10);
  309   4                  }
  310   3               break;
- 311   3               case Hundred:
+ 311   3               case System_open:
  312   3                  {
- 313   4                  Send_speech(Hundred, 5);
+ 313   4                  Send_speech(System_open, 30);
  314   4                  }
  315   3               break;
- 316   3               case Zero:
+ 316   3               case Hundred:
  317   3                  {
- 318   4                  Send_speech(Zero, 5);
+ 318   4                  Send_speech(Hundred, 5);
  319   4                  }
  320   3               break;
- 321   3               case Fengyang_brand:
+ 321   3               case Zero:
  322   3                  {
- 323   4                  Send_speech(Fengyang_brand, 5);
+ 323   4                  Send_speech(Zero, 5);
  324   4                  }
  325   3               break;
- 326   3               case Kaiqi_brand:
+ 326   3               case Fengyang_brand:
  327   3                  {
- 328   4                  Send_speech(Kaiqi_brand, 5);
+ 328   4                  Send_speech(Fengyang_brand, 5);
  329   4                  }
  330   3               break;
- 331   3               case Kangjing_brand:
+ 331   3               case Kaiqi_brand:
  332   3                  {
- 333   4                  Send_speech(Kangjing_brand, 5);
+ 333   4                  Send_speech(Kaiqi_brand, 5);
  334   4                  }
  335   3               break;
- 336   3               case Xiangniu_brand:
+ 336   3               case Kangjing_brand:
  337   3                  {
- 338   4                  Send_speech(Xiangniu_brand, 5);
+ 338   4                  Send_speech(Kangjing_brand, 5);
  339   4                  }
  340   3               break;
- 341   3               }     
- 342   2            }  
- 343   1         }
- 344          
- 345          /*------------------------------------------------------------------*-
- 346            ---- END OF FILE -------------------------------------------------
- 347          -*------------------------------------------------------------------*/
+ 341   3               case Xiangniu_brand:
+ 342   3                  {
+ 343   4                  Send_speech(Xiangniu_brand, 5);
+ 344   4                  }
+ 345   3               break;
+ 346   3               case Lvyuan_brand:
+ 347   3                  {
+ 348   4                  Send_speech(Lvyuan_brand, 5);
+ 349   4                  }
+ 350   3               break;
+ 351   3               case Yunjian_brand:
+ 352   3                  {
+ 353   4                  Send_speech(Yunjian_brand, 5);
+ 354   4                  }
+ 355   3               break;
+ 356   3               case Wuxingzuanbao_brand:
+ 357   3                  {
+ 358   4                  Send_speech(Wuxingzuanbao_brand, 5);
+ 359   4                  }
+ 360   3               break;
+ 361   3               case Battery_insufficient:
+ 362   3                  {
+ 363   4                  Send_speech(Battery_insufficient, 3);
+ 364   4                  }
+C51 COMPILER V9.54   SPEECH                                                                08/17/2016 14:42:40 PAGE 7   
+
+ 365   3               break;
+ 366   3               case Catch_thief:
+ 367   3                  {
+ 368   4                  Send_speech(Catch_thief, 25);
+ 369   4                  }
+ 370   3               break;
+ 371   3               }     
+ 372   2            }  
+ 373   1         }
+ 374          
+ 375          /*------------------------------------------------------------------*-
+ 376            ---- END OF FILE -------------------------------------------------
+ 377          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    444    ----
+   CODE SIZE        =    493    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

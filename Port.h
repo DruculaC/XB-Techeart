@@ -35,6 +35,7 @@ sbit Speech_busy = P0^7;	// P0.7, PIN19, 4031C Flag for speeching busy, 1 for sp
 // Define in N78E81x.h.
 // sbit SCL=P1^2;      		// P1.2, PIN12, IIC clock pin.
 // sbit SDA=P1^3;      		// P1.3, PIN11, IIC data pin.
+	sbit SA0 = P0^2;			// P0.2, PIN25, IIC slave address.
 
 // ------ KBI.c  --------------------------------------
 // No need to define.

@@ -53,19 +53,22 @@ void Sensor_Init(void)
 	Single_Write_IIC(0x28, 0xc8);
 
 	/*- Set_FF_MT -*/
-	// ELE = 1, OAE = 1, enable X, Y, Z.
-	Single_Write_IIC(0x15, 0xe0);
+	// ELE = 1, OAE = 1, enable Z, disable X, Y
+	// Single_Write_IIC(0x15, 0xe0);
+	// ELE = 1, OAE = 1, enable Y, disable X, Z
+	Single_Write_IIC(0x15, 0xd0);
 	// Threshold value is 1g for 0.063g/count, 1g/0.063 = 16 = 0x10.
 	// Threshold value is 1g for 0.063g/count, 0.5g/0.063 = 8 = 0x08.
-	Single_Write_IIC(0x17, 0x10);
+	Single_Write_IIC(0x17, 0x12);
 	// Debounce counter is 300ms with ODR 400Hz and LP mode, the value is 300ms/2.5ms = 120, 0x78.
 	// Debounce counter is 100ms with ODR 400Hz and LP mode, the value is 100ms/2.5ms = 40, 0x28.
 	Single_Write_IIC(0x18, 0x28);
 		
 	/*- Set_Transient -*/
-	// ELE = 1, enable X, Y, Z.
-	// ELE = 1, enable X, Y.
-	Single_Write_IIC(0x1d, 0x16);
+	// ELE = 1, enable X, Y. disable Z.
+	// Single_Write_IIC(0x1d, 0x16);
+	// ELE = 1, enable X, Z. disable Y.
+	Single_Write_IIC(0x1d, 0x1a);
 	// Threshold value is 1g for 0.063g/count, 0.5g/0.063 = 8 = 0x08.
 	Single_Write_IIC(0x1f, 0x01);
 	// Debounce counter is 50ms with ODR 400Hz and LP mode, the value is 50ms/2.5ms = 20, 0x14.
@@ -77,14 +80,16 @@ void Sensor_Init(void)
 	// Set back/front angle trip threshold to 11, Z < 65, 
 	// Set Z-lockout angle trip threshold to 111, 43 degree.
 	Single_Write_IIC(0x13, 0xc7);
-	// Set XY trip threshold angle to 0x07<<3, 15 degrees.
+	// Set XY trip threshold angle to 0x10<<3, 45 degrees.
 	// Set hysteresis to 0x04, 14 degrees.
-	Single_Write_IIC(0x14, 0x3c);
+	Single_Write_IIC(0x14, 0x84);
 	// Set Debounce counter, 100ms/2.5 = 40, 0x28.
 	Single_Write_IIC(0x12, 0x28);
 	
 	/*- Set INT1 -*/
 	// Route INT1 to System interrupt.
+//	Single_Write_IIC(0x2d, 0x3c);
+//	Single_Write_IIC(0x2e, 0x3c);
 	Single_Write_IIC(0x2d, 0x3c);
 	Single_Write_IIC(0x2e, 0x3c);
 	

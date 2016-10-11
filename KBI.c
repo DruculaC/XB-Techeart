@@ -59,7 +59,7 @@ void KBI_Init(void)
 	Sensor_Int_SourceTransient = 0;
 	Sensor_Int_SourcePL = 0;
 	Alarm_G = 0;
-	Device_layflat_G = 0;
+	Device_layflat_G = 1;
 	}
 
 /*-----------------------------------------------------------
@@ -121,19 +121,29 @@ void KBI_ISR(void) interrupt 7
 		{
 		// If it is MT_FF set the interrupt, read FF_MT_SRC register(0x16).
 		Sensor_Int_SourcePL = Single_Read_IIC(0x10);
-		if((Sensor_Int_SourcePL &0x40) == 0x40)
+//		if(((Sensor_Int_SourcePL &0x04) == 0x00)&&((Sensor_Int_SourcePL &0x40) == 0x00))
+		if((Sensor_Int_SourcePL &0x44) == 0x00)
 			{				
+			test_port = 1;
+			
+			if((System_EN_G)&&(!Device_layflat_G))
+				Alarm_G = 1;
+			
 			Device_layflat_G = 1;
 			}
 		else
 			{
+			test_port = 0;
 			Device_layflat_G = 0;
 			}
-			
-		if(((Sensor_Int_SourcePL &0xc0) == 0x80)&&(System_EN_G))
-			{
+/*			
+//		if(((Sensor_Int_SourcePL &0xc0) == 0x80)&&(System_EN_G))
+		if(((Sensor_Int_SourcePL &0x04) == 0x00)&&(System_EN_G)&&(!Device_layflat_G))
+			{			
+			Device_layflat_G = 1;
 			Alarm_G = 1;
-			}	
+			}
+		*/
 		}
 	
 	KBI_G = 1;

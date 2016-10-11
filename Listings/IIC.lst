@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   IIC                                                                   06/16/2016 11:58:37 PAGE 1   
+C51 COMPILER V9.54   IIC                                                                   08/17/2016 14:42:41 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE IIC
@@ -37,178 +37,179 @@ line level    source
   27          /*------------------------------------------------------------------*-
   28            IIC_Init()
   29            Program for IIC send a whole byte, include start stop and ack
-  30          void IIC_Init(void)
-  31             {
-  32             }
-  33          -*------------------------------------------------------------------*/
-  34          
-  35          /*------------------------------------------------------------------*-
-  36            Single_Write_IIC()
-  37            Program for IIC send a whole byte, include start stop and ack
-  38          -*------------------------------------------------------------------*/
-  39          void Single_Write_IIC(tByte REG_Address, tByte REG_data)
-  40             {
-  41   1         IIC_Start();                  //起始信号
-  42   1         IIC_SendByte(SlaveAddress);   //发送设备地址+写信号
-  43   1         IIC_SendByte(REG_Address);    //内部寄存器地址
-  44   1         IIC_SendByte(REG_data);       //内部寄存器数据
-  45   1         IIC_Stop();                   //发送停止信号
-  46   1         }
-  47          
-  48          /*------------------------------------------------------------------*-
-  49            Single_Read_IIC()
-  50            Program for IIC read a whole byte, include start stop and ack
-  51          -*------------------------------------------------------------------*/
-  52          tByte Single_Read_IIC(tByte REG_Address)
-  53             {  
-  54   1         tByte REG_data;
-C51 COMPILER V9.54   IIC                                                                   06/16/2016 11:58:37 PAGE 2   
+  30          -*------------------------------------------------------------------*/
+  31          void IIC_Init(void)
+  32             {
+  33   1         SA0 = 1;
+  34   1         }
+  35          
+  36          /*------------------------------------------------------------------*-
+  37            Single_Write_IIC()
+  38            Program for IIC send a whole byte, include start stop and ack
+  39          -*------------------------------------------------------------------*/
+  40          void Single_Write_IIC(tByte REG_Address, tByte REG_data)
+  41             {
+  42   1         IIC_Start();                  //起始信号
+  43   1         IIC_SendByte(SlaveAddress);   //发送设备地址+写信号
+  44   1         IIC_SendByte(REG_Address);    //内部寄存器地址
+  45   1         IIC_SendByte(REG_data);       //内部寄存器数据
+  46   1         IIC_Stop();                   //发送停止信号
+  47   1         }
+  48          
+  49          /*------------------------------------------------------------------*-
+  50            Single_Read_IIC()
+  51            Program for IIC read a whole byte, include start stop and ack
+  52          -*------------------------------------------------------------------*/
+  53          tByte Single_Read_IIC(tByte REG_Address)
+  54             {  
+C51 COMPILER V9.54   IIC                                                                   08/17/2016 14:42:41 PAGE 2   
 
-  55   1         IIC_Start();                          //起始信号
-  56   1         IIC_SendByte(SlaveAddress);           //发送设备地址+写信号
-  57   1         IIC_SendByte(REG_Address);            //发送存储单元地址，从0开始 
-  58   1         IIC_Start();                          //起始信号
-  59   1         IIC_SendByte(SlaveAddress+1);         //发送设备地址+读信号
-  60   1         REG_data = IIC_RecvByte();            //读出寄存器数据
-  61   1         IIC_SendACK(1);
-  62   1         IIC_Stop();                           //停止信号
-  63   1         return REG_data; 
-  64   1         }
-  65          
-  66          /*------------------------------------------------------------------*-
-  67            Multiple_read_IIC()
-  68            Program for IIC read a whole byte, include start stop and ack
-  69          void Multiple_read_IIC(tByte Start_add, tByte Read_count)
-  70          {   
-  71             tByte i;
-  72             IIC_Start();                           //起始信号
-  73             IIC_SendByte(SlaveAddress);            //发送设备地址+写信号
-  74             IIC_SendByte(Start_add);               //发送存储单元地址，从0x01开始   
-  75             IIC_Start();                           //起始信号
-  76             IIC_SendByte(SlaveAddress+1);          //发送设备地址+读信号
-  77             for (i=0; i<Read_count; i++)           //连续读取6个地址数据，存储中BUF
-  78                {
-  79                IIC_buffer[i] = IIC_RecvByte();     //IIC_buffer[0]存储0x32地址中的数据
-  80                if (i == Read_count-1)
-  81                   {
-  82                   IIC_SendACK(1);                  //最后一个数据需要回NOACK
-  83                   }
-  84                else
-  85                   {
-  86                   IIC_SendACK(0);                  //回应ACK
-  87                   }
-  88                }
-  89             IIC_Stop();                            //停止信号
-  90             Delay(LOOP_TIMEOUT_INIT_005ms);
-  91             }
-  92          -*------------------------------------------------------------------*/
-  93          
-  94          /*------------------------------------------------------------------*-
-  95            IIC_SendByte()
-  96            Program for IIC send a byte.
-  97          -*------------------------------------------------------------------*/
-  98          void IIC_SendByte(tByte dat)
-  99             {
- 100   1         tByte i;
- 101   1         for (i=0; i<8; i++)        //8位计数器
- 102   1            {
- 103   2            dat <<= 1;              //移出数据的最高位
- 104   2            SDA = CY;               //送数据口
- 105   2            SCL = 1;                //拉高时钟线
- 106   2            Delay5us();             //延时
- 107   2            SCL = 0;                //拉低时钟线
- 108   2            Delay5us();             //延时
- 109   2            }
- 110   1         IIC_RecvACK();
- 111   1         }
- 112          
- 113          /*------------------------------------------------------------------*-
- 114            IIC_RecvByte()
- 115            Program for IIC receive a byte.
- 116          -*------------------------------------------------------------------*/
-C51 COMPILER V9.54   IIC                                                                   06/16/2016 11:58:37 PAGE 3   
+  55   1         tByte REG_data;
+  56   1         IIC_Start();                          //起始信号
+  57   1         IIC_SendByte(SlaveAddress);           //发送设备地址+写信号
+  58   1         IIC_SendByte(REG_Address);            //发送存储单元地址，从0开始 
+  59   1         IIC_Start();                          //起始信号
+  60   1         IIC_SendByte(SlaveAddress+1);         //发送设备地址+读信号
+  61   1         REG_data = IIC_RecvByte();            //读出寄存器数据
+  62   1         IIC_SendACK(1);
+  63   1         IIC_Stop();                           //停止信号
+  64   1         return REG_data; 
+  65   1         }
+  66          
+  67          /*------------------------------------------------------------------*-
+  68            Multiple_read_IIC()
+  69            Program for IIC read a whole byte, include start stop and ack
+  70          void Multiple_read_IIC(tByte Start_add, tByte Read_count)
+  71          {   
+  72             tByte i;
+  73             IIC_Start();                           //起始信号
+  74             IIC_SendByte(SlaveAddress);            //发送设备地址+写信号
+  75             IIC_SendByte(Start_add);               //发送存储单元地址，从0x01开始   
+  76             IIC_Start();                           //起始信号
+  77             IIC_SendByte(SlaveAddress+1);          //发送设备地址+读信号
+  78             for (i=0; i<Read_count; i++)           //连续读取6个地址数据，存储中BUF
+  79                {
+  80                IIC_buffer[i] = IIC_RecvByte();     //IIC_buffer[0]存储0x32地址中的数据
+  81                if (i == Read_count-1)
+  82                   {
+  83                   IIC_SendACK(1);                  //最后一个数据需要回NOACK
+  84                   }
+  85                else
+  86                   {
+  87                   IIC_SendACK(0);                  //回应ACK
+  88                   }
+  89                }
+  90             IIC_Stop();                            //停止信号
+  91             Delay(LOOP_TIMEOUT_INIT_005ms);
+  92             }
+  93          -*------------------------------------------------------------------*/
+  94          
+  95          /*------------------------------------------------------------------*-
+  96            IIC_SendByte()
+  97            Program for IIC send a byte.
+  98          -*------------------------------------------------------------------*/
+  99          void IIC_SendByte(tByte dat)
+ 100             {
+ 101   1         tByte i;
+ 102   1         for (i=0; i<8; i++)        //8位计数器
+ 103   1            {
+ 104   2            dat <<= 1;              //移出数据的最高位
+ 105   2            SDA = CY;               //送数据口
+ 106   2            SCL = 1;                //拉高时钟线
+ 107   2            Delay5us();             //延时
+ 108   2            SCL = 0;                //拉低时钟线
+ 109   2            Delay5us();             //延时
+ 110   2            }
+ 111   1         IIC_RecvACK();
+ 112   1         }
+ 113          
+ 114          /*------------------------------------------------------------------*-
+ 115            IIC_RecvByte()
+ 116            Program for IIC receive a byte.
+C51 COMPILER V9.54   IIC                                                                   08/17/2016 14:42:41 PAGE 3   
 
- 117          tByte IIC_RecvByte()
- 118             {
- 119   1         tByte i;
- 120   1         tByte dat = 0;
- 121   1      
- 122   1         SDA = 1;                   //使能内部上拉,准备读取数据,
- 123   1         for (i=0; i<8; i++)        //8位计数器
- 124   1            {
- 125   2            dat <<= 1;
- 126   2            SCL = 1;                //拉高时钟线
- 127   2            Delay5us();             //延时
- 128   2            dat |= SDA;             //读数据               
- 129   2            SCL = 0;                //拉低时钟线
- 130   2            Delay5us();             //延时
- 131   2            }
- 132   1         return dat;
- 133   1         }
- 134          
- 135          /*------------------------------------------------------------------*-
- 136            IIC_Start()
- 137            Program for IIC start signal.
- 138          -*------------------------------------------------------------------*/
- 139          void IIC_Start()
- 140             {
- 141   1         SDA = 1;
- 142   1         SCL = 1;
- 143   1         Delay5us();
- 144   1         SDA = 0;
- 145   1         Delay5us();
- 146   1         SCL = 0;
- 147   1         }
- 148          
- 149          /*------------------------------------------------------------------*-
- 150            IIC_Stop()
- 151            Program for IIC stop signal.
- 152          -*------------------------------------------------------------------*/
- 153          void IIC_Stop()
- 154             {
- 155   1         SDA = 0;
- 156   1         SCL = 1;
- 157   1         Delay5us();
- 158   1         SDA = 1;
- 159   1         Delay5us();
- 160   1         }
- 161          
- 162          /*------------------------------------------------------------------*-
- 163            IIC_SendACK()
- 164            Program for IIC send ACK signal.
- 165          -*------------------------------------------------------------------*/
- 166          void IIC_SendACK(bit ack)
- 167             {
- 168   1         SDA = ack;
- 169   1         SCL = 1;
- 170   1         Delay5us();
- 171   1         SCL = 0;
- 172   1         Delay5us();
- 173   1         }
- 174          
- 175          /*------------------------------------------------------------------*-
- 176            IIC_RecvACK()
- 177            Program for IIC receive ACK signal.
- 178          -*------------------------------------------------------------------*/
-C51 COMPILER V9.54   IIC                                                                   06/16/2016 11:58:37 PAGE 4   
+ 117          -*------------------------------------------------------------------*/
+ 118          tByte IIC_RecvByte()
+ 119             {
+ 120   1         tByte i;
+ 121   1         tByte dat = 0;
+ 122   1      
+ 123   1         SDA = 1;                   //使能内部上拉,准备读取数据,
+ 124   1         for (i=0; i<8; i++)        //8位计数器
+ 125   1            {
+ 126   2            dat <<= 1;
+ 127   2            SCL = 1;                //拉高时钟线
+ 128   2            Delay5us();             //延时
+ 129   2            dat |= SDA;             //读数据               
+ 130   2            SCL = 0;                //拉低时钟线
+ 131   2            Delay5us();             //延时
+ 132   2            }
+ 133   1         return dat;
+ 134   1         }
+ 135          
+ 136          /*------------------------------------------------------------------*-
+ 137            IIC_Start()
+ 138            Program for IIC start signal.
+ 139          -*------------------------------------------------------------------*/
+ 140          void IIC_Start()
+ 141             {
+ 142   1         SDA = 1;
+ 143   1         SCL = 1;
+ 144   1         Delay5us();
+ 145   1         SDA = 0;
+ 146   1         Delay5us();
+ 147   1         SCL = 0;
+ 148   1         }
+ 149          
+ 150          /*------------------------------------------------------------------*-
+ 151            IIC_Stop()
+ 152            Program for IIC stop signal.
+ 153          -*------------------------------------------------------------------*/
+ 154          void IIC_Stop()
+ 155             {
+ 156   1         SDA = 0;
+ 157   1         SCL = 1;
+ 158   1         Delay5us();
+ 159   1         SDA = 1;
+ 160   1         Delay5us();
+ 161   1         }
+ 162          
+ 163          /*------------------------------------------------------------------*-
+ 164            IIC_SendACK()
+ 165            Program for IIC send ACK signal.
+ 166          -*------------------------------------------------------------------*/
+ 167          void IIC_SendACK(bit ack)
+ 168             {
+ 169   1         SDA = ack;
+ 170   1         SCL = 1;
+ 171   1         Delay5us();
+ 172   1         SCL = 0;
+ 173   1         Delay5us();
+ 174   1         }
+ 175          
+ 176          /*------------------------------------------------------------------*-
+ 177            IIC_RecvACK()
+ 178            Program for IIC receive ACK signal.
+C51 COMPILER V9.54   IIC                                                                   08/17/2016 14:42:41 PAGE 4   
 
- 179          bit IIC_RecvACK()
- 180             {
- 181   1         SCL = 1;
- 182   1         Delay5us();
- 183   1         CY = SDA;
- 184   1         SCL = 0;
- 185   1         Delay5us();
- 186   1         return CY;
- 187   1         }
- 188          
- 189          /*------------------------------------------------------------------*-
- 190            ---- END OF FILE -------------------------------------------------
- 191          -*------------------------------------------------------------------*/
+ 179          -*------------------------------------------------------------------*/
+ 180          bit IIC_RecvACK()
+ 181             {
+ 182   1         SCL = 1;
+ 183   1         Delay5us();
+ 184   1         CY = SDA;
+ 185   1         SCL = 0;
+ 186   1         Delay5us();
+ 187   1         return CY;
+ 188   1         }
+ 189          
+ 190          /*------------------------------------------------------------------*-
+ 191            ---- END OF FILE -------------------------------------------------
+ 192          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    194    ----
+   CODE SIZE        =    197    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

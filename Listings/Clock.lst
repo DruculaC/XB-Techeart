@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   CLOCK                                                                 06/16/2016 11:58:38 PAGE 1   
+C51 COMPILER V9.54   CLOCK                                                                 08/17/2016 14:42:41 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE CLOCK
@@ -62,7 +62,7 @@ line level    source
   52   1         
   53   1         ID_disable_G = 0;
   54   1         ID_disable_time = 0;
-C51 COMPILER V9.54   CLOCK                                                                 06/16/2016 11:58:38 PAGE 2   
+C51 COMPILER V9.54   CLOCK                                                                 08/17/2016 14:42:41 PAGE 2   
 
   55   1         }
   56          
@@ -75,92 +75,90 @@ line level    source
   63             {
   64   1         Clock_second += 1;
   65   1         
-  66   1         test_port = ~test_port; 
-  67   1         
-  68   1         // 10s after power on, close passwd match.
-  69   1         Self_learn_reset();
-  70   1         
-  71   1         if(Clock_second >= 60)
-  72   1            {
-  73   2            Clock_second = 0;
-  74   2            Clock_minute += 1;
-  75   2            if(Clock_minute >= 60)
-  76   2               {
-  77   3               Clock_minute = 0;
-  78   3               }
-  79   2            
-  80   2            // Detect battery every minute.
-  81   2            Battery_detection();          
-  82   2            }
-  83   1         // Change system status.
-  84   1         System_change();
-  85   1         
-  86   1         // Reset RXD power after a short time.
-  87   1      // RXD_power_reset();
-  88   1         
-  89   1         if(ID_disable_G)
-  90   1            {
-  91   2            ID_disable_time += 1;
-  92   2            if(ID_disable_time > 3)
-  93   2               {
-  94   3               ID_disable_time = 0;
-  95   3               ID_disable_G = 0;
-  96   3               }
-  97   2            }
-  98   1         
-  99   1         if(hSCH_sleep_EN)
- 100   1            {
- 101   2            hSCH_sleep_EN_time += 1;
- 102   2            if(hSCH_sleep_EN_time > 10)
- 103   2               {
- 104   3               hSCH_sleep_EN_time = 0;
- 105   3               hSCH_sleep_EN = 0;
- 106   3               XB_open_flag = 0;
+  66   1         // 10s after power on, close passwd match.
+  67   1         Self_learn_reset();
+  68   1         
+  69   1         if(Clock_second >= 40)
+  70   1            {
+  71   2            Clock_second = 0;
+  72   2            Clock_minute += 1;
+  73   2            if(Clock_minute >= 60)
+  74   2               {
+  75   3               Clock_minute = 0;
+  76   3               }
+  77   2            
+  78   2            // Detect battery every minute.
+  79   2            Battery_detection();          
+  80   2            }
+  81   1         // Change system status.
+  82   1         System_change();
+  83   1         
+  84   1         // Reset RXD power after a short time.
+  85   1      // RXD_power_reset();
+  86   1         
+  87   1         if(ID_disable_G)
+  88   1            {
+  89   2            ID_disable_time += 1;
+  90   2            if(ID_disable_time > 3)
+  91   2               {
+  92   3               ID_disable_time = 0;
+  93   3               ID_disable_G = 0;
+  94   3               }
+  95   2            }
+  96   1         
+  97   1         if(hSCH_sleep_EN)
+  98   1            {
+  99   2            hSCH_sleep_EN_time += 1;
+ 100   2            if(hSCH_sleep_EN_time > 10)
+ 101   2               {
+ 102   3               hSCH_sleep_EN_time = 0;
+ 103   3               hSCH_sleep_EN = 0;
+ 104   3               XB_open_flag = 0;
+ 105   3               
+ 106   3               RXD_power_off();
  107   3               
- 108   3               RXD_power_off();
- 109   3               
- 110   3      //       Speech_RST = 0;
- 111   3               Speech_EN = 0;
- 112   3               
- 113   3      //       hSCH_Go_To_Sleep();
- 114   3               }
- 115   2            }  
- 116   1         }
-C51 COMPILER V9.54   CLOCK                                                                 06/16/2016 11:58:38 PAGE 3   
+ 108   3      //       Speech_RST = 0;
+ 109   3               Speech_EN = 0;
+ 110   3               
+ 111   3               hSCH_Go_To_Sleep();
+ 112   3               }
+ 113   2            }  
+ 114   1         }
+ 115          
+ 116          /*------------------------------------------------------------------*-
+C51 COMPILER V9.54   CLOCK                                                                 08/17/2016 14:42:41 PAGE 3   
 
- 117          
- 118          /*------------------------------------------------------------------*-
- 119            System_change()
- 120            Initialisation function for the switch library.
- 121            1s/ticket.
- 122          -*------------------------------------------------------------------*/
- 123          void System_change(void)
- 124             {
- 125   1         if(ID_certificated_G)
- 126   1            {
- 127   2            ID_certificated_G = 0;
- 128   2            System_EN_G = ~System_EN_G;
- 129   2            // If system is enabled, deploy the vibration sensor and ultrasonic sensor.
- 130   2            if(System_EN_G == 1)
- 131   2               {
- 132   3               Goto_speech(System_open);
- 133   3               XB_open_flag = 0;
- 134   3               }
- 135   2            else
- 136   2               {
- 137   3               Goto_speech(System_closed);      
- 138   3               XB_open_flag = 0;
- 139   3               }
- 140   2            }
- 141   1         }
- 142          
- 143          /*------------------------------------------------------------------*-
- 144            ---- END OF FILE -------------------------------------------------
- 145          -*------------------------------------------------------------------*/
+ 117            System_change()
+ 118            Initialisation function for the switch library.
+ 119            1s/ticket.
+ 120          -*------------------------------------------------------------------*/
+ 121          void System_change(void)
+ 122             {
+ 123   1         if(ID_certificated_G)
+ 124   1            {
+ 125   2            ID_certificated_G = 0;
+ 126   2            System_EN_G = ~System_EN_G;
+ 127   2            // If system is enabled, deploy the vibration sensor and ultrasonic sensor.
+ 128   2            if(System_EN_G == 1)
+ 129   2               {
+ 130   3               Goto_speech(System_open);
+ 131   3               XB_open_flag = 0;
+ 132   3               }
+ 133   2            else
+ 134   2               {
+ 135   3               Goto_speech(System_closed);      
+ 136   3               XB_open_flag = 0;
+ 137   3               }
+ 138   2            }
+ 139   1         }
+ 140          
+ 141          /*------------------------------------------------------------------*-
+ 142            ---- END OF FILE -------------------------------------------------
+ 143          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    112    ----
+   CODE SIZE        =    113    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

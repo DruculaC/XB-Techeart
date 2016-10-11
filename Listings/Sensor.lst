@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   SENSOR                                                                06/16/2016 11:58:38 PAGE 1   
+C51 COMPILER V9.54   SENSOR                                                                08/17/2016 14:42:41 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE SENSOR
@@ -62,82 +62,87 @@ line level    source
   52   1         // Set time window for second tap to 500ms, 500ms/2.5 = 200 = 0xc8
   53   1         Single_Write_IIC(0x28, 0xc8);
   54   1      
-C51 COMPILER V9.54   SENSOR                                                                06/16/2016 11:58:38 PAGE 2   
+C51 COMPILER V9.54   SENSOR                                                                08/17/2016 14:42:41 PAGE 2   
 
   55   1         /*- Set_FF_MT -*/
-  56   1         // ELE = 1, OAE = 1, enable X, Y, Z.
-  57   1         Single_Write_IIC(0x15, 0xe0);
-  58   1         // Threshold value is 1g for 0.063g/count, 1g/0.063 = 16 = 0x10.
-  59   1         // Threshold value is 1g for 0.063g/count, 0.5g/0.063 = 8 = 0x08.
-  60   1         Single_Write_IIC(0x17, 0x10);
-  61   1         // Debounce counter is 300ms with ODR 400Hz and LP mode, the value is 300ms/2.5ms = 120, 0x78.
-  62   1         // Debounce counter is 100ms with ODR 400Hz and LP mode, the value is 100ms/2.5ms = 40, 0x28.
-  63   1         Single_Write_IIC(0x18, 0x28);
-  64   1            
-  65   1         /*- Set_Transient -*/
-  66   1         // ELE = 1, enable X, Y, Z.
-  67   1         // ELE = 1, enable X, Y.
-  68   1         Single_Write_IIC(0x1d, 0x16);
-  69   1         // Threshold value is 1g for 0.063g/count, 0.5g/0.063 = 8 = 0x08.
-  70   1         Single_Write_IIC(0x1f, 0x01);
-  71   1         // Debounce counter is 50ms with ODR 400Hz and LP mode, the value is 50ms/2.5ms = 20, 0x14.
-  72   1         Single_Write_IIC(0x20, 0x28);
-  73   1         
-  74   1         /*- Set_PL -*/
-  75   1         // Set PL_EN, enable orientation detection
-  76   1         Single_Write_IIC(0x11, 0x40);
-  77   1         // Set back/front angle trip threshold to 11, Z < 65, 
-  78   1         // Set Z-lockout angle trip threshold to 111, 43 degree.
-  79   1         Single_Write_IIC(0x13, 0xc7);
-  80   1         // Set XY trip threshold angle to 0x07<<3, 15 degrees.
-  81   1         // Set hysteresis to 0x04, 14 degrees.
-  82   1         Single_Write_IIC(0x14, 0x3c);
-  83   1         // Set Debounce counter, 100ms/2.5 = 40, 0x28.
-  84   1         Single_Write_IIC(0x12, 0x28);
-  85   1         
-  86   1         /*- Set INT1 -*/
-  87   1         // Route INT1 to System interrupt.
-  88   1         Single_Write_IIC(0x2d, 0x3c);
-  89   1         Single_Write_IIC(0x2e, 0x3c);
-  90   1         
-  91   1         // Read the CTRL_REG1.
-  92   1         CTRL_REG1_data = Single_Read_IIC(0x2a);
-  93   1         CTRL_REG1_data |= 0x01;
-  94   1         // Set the sensor in active mode.
-  95   1         Single_Write_IIC(0x2a, CTRL_REG1_data);
-  96   1         }
-  97          
-  98          /*------------------------------------------------------------------*-
-  99            Set_FF_MT()
- 100            Initialisation function for the switch library.
- 101          void Set_FF_MT(void)
- 102             {
- 103             // Set the sensor in 100Hz ODR, Standby
- 104             Single_Write_IIC(0x2a, 0x18); 
- 105             // ELE = 1, OAE = 1, enable X, Y, disable Z.
- 106             Single_Write_IIC(0x15, 0xd8);
- 107             // Threshold value is 1g for 0.063g/count.
- 108             Single_Write_IIC(0x17, 0x10);
- 109             // Debounce counter is 300ms, the value is 300ms/10ms = 30, 0x1e.
- 110             Single_Write_IIC(0x18, 0x0a);
- 111             // Enable FF_MT interrupt function.
- 112             Single_Write_IIC(0x2d, 0x04);
- 113             // Route the FF_MT interrupt to INT1 hardware pin.
- 114             Single_Write_IIC(0x2e, 0x04);
- 115             // Read the CTRL_REG1.
- 116             CTRL_REG1_data = Single_Read_IIC(0x2a);
-C51 COMPILER V9.54   SENSOR                                                                06/16/2016 11:58:38 PAGE 3   
+  56   1         // ELE = 1, OAE = 1, enable Z, disable X, Y
+  57   1         // Single_Write_IIC(0x15, 0xe0);
+  58   1         // ELE = 1, OAE = 1, enable Y, disable X, Z
+  59   1         Single_Write_IIC(0x15, 0xd0);
+  60   1         // Threshold value is 1g for 0.063g/count, 1g/0.063 = 16 = 0x10.
+  61   1         // Threshold value is 1g for 0.063g/count, 0.5g/0.063 = 8 = 0x08.
+  62   1         Single_Write_IIC(0x17, 0x12);
+  63   1         // Debounce counter is 300ms with ODR 400Hz and LP mode, the value is 300ms/2.5ms = 120, 0x78.
+  64   1         // Debounce counter is 100ms with ODR 400Hz and LP mode, the value is 100ms/2.5ms = 40, 0x28.
+  65   1         Single_Write_IIC(0x18, 0x28);
+  66   1            
+  67   1         /*- Set_Transient -*/
+  68   1         // ELE = 1, enable X, Y. disable Z.
+  69   1         // Single_Write_IIC(0x1d, 0x16);
+  70   1         // ELE = 1, enable X, Z. disable Y.
+  71   1         Single_Write_IIC(0x1d, 0x1a);
+  72   1         // Threshold value is 1g for 0.063g/count, 0.5g/0.063 = 8 = 0x08.
+  73   1         Single_Write_IIC(0x1f, 0x01);
+  74   1         // Debounce counter is 50ms with ODR 400Hz and LP mode, the value is 50ms/2.5ms = 20, 0x14.
+  75   1         Single_Write_IIC(0x20, 0x28);
+  76   1         
+  77   1         /*- Set_PL -*/
+  78   1         // Set PL_EN, enable orientation detection
+  79   1         Single_Write_IIC(0x11, 0x40);
+  80   1         // Set back/front angle trip threshold to 11, Z < 65, 
+  81   1         // Set Z-lockout angle trip threshold to 111, 43 degree.
+  82   1         Single_Write_IIC(0x13, 0xc7);
+  83   1         // Set XY trip threshold angle to 0x10<<3, 45 degrees.
+  84   1         // Set hysteresis to 0x04, 14 degrees.
+  85   1         Single_Write_IIC(0x14, 0x84);
+  86   1         // Set Debounce counter, 100ms/2.5 = 40, 0x28.
+  87   1         Single_Write_IIC(0x12, 0x28);
+  88   1         
+  89   1         /*- Set INT1 -*/
+  90   1         // Route INT1 to System interrupt.
+  91   1      // Single_Write_IIC(0x2d, 0x3c);
+  92   1      // Single_Write_IIC(0x2e, 0x3c);
+  93   1         Single_Write_IIC(0x2d, 0x3c);
+  94   1         Single_Write_IIC(0x2e, 0x3c);
+  95   1         
+  96   1         // Read the CTRL_REG1.
+  97   1         CTRL_REG1_data = Single_Read_IIC(0x2a);
+  98   1         CTRL_REG1_data |= 0x01;
+  99   1         // Set the sensor in active mode.
+ 100   1         Single_Write_IIC(0x2a, CTRL_REG1_data);
+ 101   1         }
+ 102          
+ 103          /*------------------------------------------------------------------*-
+ 104            Set_FF_MT()
+ 105            Initialisation function for the switch library.
+ 106          void Set_FF_MT(void)
+ 107             {
+ 108             // Set the sensor in 100Hz ODR, Standby
+ 109             Single_Write_IIC(0x2a, 0x18); 
+ 110             // ELE = 1, OAE = 1, enable X, Y, disable Z.
+ 111             Single_Write_IIC(0x15, 0xd8);
+ 112             // Threshold value is 1g for 0.063g/count.
+ 113             Single_Write_IIC(0x17, 0x10);
+ 114             // Debounce counter is 300ms, the value is 300ms/10ms = 30, 0x1e.
+ 115             Single_Write_IIC(0x18, 0x0a);
+ 116             // Enable FF_MT interrupt function.
+C51 COMPILER V9.54   SENSOR                                                                08/17/2016 14:42:41 PAGE 3   
 
- 117             CTRL_REG1_data |= 0x01;
- 118             // Set the sensor in active mode.
- 119             Single_Write_IIC(0x2A, CTRL_REG1_data);  
- 120             }
- 121             
- 122          -*------------------------------------------------------------------*/
- 123          
- 124          /*------------------------------------------------------------------*-
- 125            ---- END OF FILE -------------------------------------------------
- 126          -*------------------------------------------------------------------*/
+ 117             Single_Write_IIC(0x2d, 0x04);
+ 118             // Route the FF_MT interrupt to INT1 hardware pin.
+ 119             Single_Write_IIC(0x2e, 0x04);
+ 120             // Read the CTRL_REG1.
+ 121             CTRL_REG1_data = Single_Read_IIC(0x2a);
+ 122             CTRL_REG1_data |= 0x01;
+ 123             // Set the sensor in active mode.
+ 124             Single_Write_IIC(0x2A, CTRL_REG1_data);  
+ 125             }
+ 126             
+ 127          -*------------------------------------------------------------------*/
+ 128          
+ 129          /*------------------------------------------------------------------*-
+ 130            ---- END OF FILE -------------------------------------------------
+ 131          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

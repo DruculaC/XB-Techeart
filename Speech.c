@@ -46,6 +46,9 @@ void Speech_Init(void)
 	
 //	Goto_speech(No_voice);
 	Speech_reset();
+
+	Speech_time = 0;
+	Goto_speech(Tick);
 	}
 
 /*--------------------------------------------------
@@ -64,8 +67,8 @@ void Send_speech(tByte count_a, tByte time_b)
 		Speech_data = 0; 
 		Delay(LOOP_TIMEOUT_INIT_001ms);
 		}
-//	Speech_time_thres = time_b;
-	time_b = 0;
+	Speech_time_thres = time_b;
+//	time_b = 0;
 	
 	Speech_scenario = 0;
 	}
@@ -139,12 +142,14 @@ void Speech_s_update(void)
 ------------------------------------------------------------------*/
 void Speech_broadcast(void)
 	{	
-	if((Speech_busy)&&(Speech_scenario != Tick))
+//	if((Speech_busy)&&(Speech_scenario != Tick))
+	if((Speech_EN)&&(Speech_scenario != Tick))
 		{
 		Speech_busy_G = 1;
 		
 		Speech_time += 1;
-		if(Speech_time > 100)
+//		if(Speech_time > 100)
+		if(Speech_time > Speech_time_thres)
 			{
 			Speech_time = 0;
 			Speech_EN = 0;
@@ -195,7 +200,7 @@ void Speech_broadcast(void)
 			break;
 			case Siren:
 				{
-				Send_speech(Siren, 5);
+				Send_speech(Siren, 20);
 				}
 			break;
 			case Battery_can_hold:
@@ -295,7 +300,7 @@ void Speech_broadcast(void)
 			break;			
 			case Ticktack:
 				{
-				Send_speech(Ticktack, 15);
+				Send_speech(Ticktack, 18);
 				}
 			break;		
 			case Aima_brand:
@@ -305,7 +310,7 @@ void Speech_broadcast(void)
 			break;
 			case System_open:
 				{
-				Send_speech(System_open, 20);
+				Send_speech(System_open, 30);
 				}
 			break;
 			case Hundred:
@@ -336,6 +341,31 @@ void Speech_broadcast(void)
 			case Xiangniu_brand:
 				{
 				Send_speech(Xiangniu_brand, 5);
+				}
+			break;
+			case Lvyuan_brand:
+				{
+				Send_speech(Lvyuan_brand, 5);
+				}
+			break;
+			case Yunjian_brand:
+				{
+				Send_speech(Yunjian_brand, 5);
+				}
+			break;
+			case Wuxingzuanbao_brand:
+				{
+				Send_speech(Wuxingzuanbao_brand, 5);
+				}
+			break;
+			case Battery_insufficient:
+				{
+				Send_speech(Battery_insufficient, 3);
+				}
+			break;
+			case Catch_thief:
+				{
+				Send_speech(Catch_thief, 25);
 				}
 			break;
 			}		

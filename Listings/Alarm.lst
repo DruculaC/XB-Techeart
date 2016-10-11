@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   ALARM                                                                 06/16/2016 11:58:37 PAGE 1   
+C51 COMPILER V9.54   ALARM                                                                 08/17/2016 14:42:41 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE ALARM
@@ -35,60 +35,78 @@ line level    source
   25          extern tByte hSCH_sleep_EN_time;
   26          
   27          // ------ Private variables ----------------------------------------
-  28          
-  29          // ------ Private constants ----------------------------------------
-  30          
+  28          tByte Alarm_speech_level;
+  29          
+  30          // ------ Private constants ----------------------------------------
   31          
-  32          /*------------------------------------------------------------------*-
-  33            Alarm_Init()
-  34            Initialisation function for the switch library.
-  35          -*------------------------------------------------------------------*/
-  36          void Alarm_Init(void)
-  37             {
-  38   1         }
-  39          
-  40          /*------------------------------------------------------------------*-
-  41            Alarm_update()
-  42            Initialisation function for the switch library.
-  43          -*------------------------------------------------------------------*/
-  44          void Alarm_update(void)
-  45             {
-  46   1         Analyse_KBI();
-  47   1         
-  48   1         
-  49   1         if(Alarm_G)
-  50   1            {
-  51   2            RXD_power_on();
-  52   2            Goto_speech(Siren);
-  53   2            hSCH_sleep_EN_time = 0;
-  54   2            }
-C51 COMPILER V9.54   ALARM                                                                 06/16/2016 11:58:37 PAGE 2   
+  32          
+  33          /*------------------------------------------------------------------*-
+  34            Alarm_Init()
+  35            Initialisation function for the switch library.
+  36          -*------------------------------------------------------------------*/
+  37          void Alarm_Init(void)
+  38             {
+  39   1         Alarm_speech_level = 0;
+  40   1         }
+  41          
+  42          /*------------------------------------------------------------------*-
+  43            Alarm_update()
+  44            Initialisation function for the switch library.
+  45          -*------------------------------------------------------------------*/
+  46          void Alarm_update(void)
+  47             {
+  48   1         Analyse_KBI();
+  49   1         
+  50   1         if(Alarm_G)
+  51   1            {
+  52   2            RXD_power_on();
+  53   2            if(Speech_EN == 0)
+  54   2               {
+C51 COMPILER V9.54   ALARM                                                                 08/17/2016 14:42:41 PAGE 2   
 
-  55   1         }
-  56          
-  57          /*------------------------------------------------------------------*-
-  58            Analyse_KBI()
-  59            Initialisation function for the switch library.
-  60          -*------------------------------------------------------------------*/
-  61          void Analyse_KBI(void)
-  62             {
-  63   1         if(KBI_G)
-  64   1            {     
-  65   2            KBI_G = 0;  
-  66   2            }  
-  67   1         }
-  68             
-  69          /*------------------------------------------------------------------*-
-  70            ---- END OF FILE -------------------------------------------------
-  71          -*------------------------------------------------------------------*/
+  55   3               switch(Alarm_speech_level)
+  56   3                  {
+  57   4                  case 0:
+  58   4                     {
+  59   5                     Alarm_speech_level = 1;
+  60   5                     Goto_speech(Catch_thief);
+  61   5                     }
+  62   4                  break;
+  63   4                  case 1:
+  64   4                     {
+  65   5                     Alarm_speech_level = 0;
+  66   5                     Goto_speech(Siren);
+  67   5                     }
+  68   4                  break;
+  69   4                  }        
+  70   3               }
+  71   2            hSCH_sleep_EN_time = 0;
+  72   2            }
+  73   1         }
+  74          
+  75          /*------------------------------------------------------------------*-
+  76            Analyse_KBI()
+  77            Initialisation function for the switch library.
+  78          -*------------------------------------------------------------------*/
+  79          void Analyse_KBI(void)
+  80             {
+  81   1         if(KBI_G)
+  82   1            {     
+  83   2            KBI_G = 0;  
+  84   2            }  
+  85   1         }
+  86             
+  87          /*------------------------------------------------------------------*-
+  88            ---- END OF FILE -------------------------------------------------
+  89          -*------------------------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     25    ----
+   CODE SIZE        =     49    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =      1    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
